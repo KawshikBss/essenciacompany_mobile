@@ -19,7 +19,7 @@ class _TextInputState extends State<TextInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
@@ -28,12 +28,17 @@ class _TextInputState extends State<TextInput> {
       child: TextField(
         controller: widget.controller,
         obscureText: widget.obscureText,
+        style: GoogleFonts.roboto(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w300,
+        ),
         decoration: InputDecoration(
           hintText: widget.hintText,
           border: InputBorder.none,
           hintStyle: GoogleFonts.roboto(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w300,
           ),
         ),
