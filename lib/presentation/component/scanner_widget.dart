@@ -12,12 +12,13 @@ class ScannerWidget extends StatefulWidget {
 class _ScannerWidgetState extends State<ScannerWidget> {
   @override
   Widget build(BuildContext context) {
-    return MobileScanner(
+    return Expanded(
+        child: MobileScanner(
       controller: MobileScannerController(
         detectionSpeed: DetectionSpeed.noDuplicates,
         returnImage: true,
       ),
       onDetect: widget.onScan,
-    );
+    ));
   }
 }
