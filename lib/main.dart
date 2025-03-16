@@ -1,4 +1,6 @@
 import 'package:essenciacompany_mobile/presentation/view/auth/login_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/zone/select_zone_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,6 +19,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const LoginView(),
+      routes: {
+        '/login': (context) => const LoginView(),
+        '/select_zone': (context) => const SelectZoneView(),
+        '/scan-ticket': (context) => const ScannerView(),
+      },
     );
   }
 }
