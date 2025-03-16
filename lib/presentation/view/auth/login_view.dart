@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:essenciacompany_mobile/domain/auth_requests.dart';
 import 'package:essenciacompany_mobile/presentation/component/form_widget.dart';
 import 'package:essenciacompany_mobile/presentation/component/layout/auth_layout.dart';
 import 'package:essenciacompany_mobile/presentation/component/text_input.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -13,6 +17,39 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  SharedPreferences? prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  _onLogin() async {
+    if (_emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        prefs == null) {
+      return;
+    }
+    final res = await login(_emailController.text, _passwordController.text);
+    if (res['success']) {
+      await prefs!.setString('token', res['token']);
+      await prefs!.setString('user', jsonEncode(res['user']));
+      Navigator.pushNamed(context, '/select_zone');
+    }
+  }
+
+  loadData() async {
+    var ins = await SharedPreferences.getInstance();
+    setState(() {
+      prefs = ins;
+    });
+    final token = prefs!.getString('token');
+    if (token != null && token.isNotEmpty) {
+      Navigator.pushNamed(context, '/select_zone');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AuthLayout(
@@ -45,7 +82,7 @@ class _LoginViewState extends State<LoginView> {
                       height: 50,
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: _onLogin,
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
