@@ -27,7 +27,10 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
   }
 
   _onScan(dynamic) async {
-    print(dynamic);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(dynamic),
+      backgroundColor: Colors.green,
+    ));
     setState(() {
       _ticket = dynamic;
     });
@@ -35,6 +38,7 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final res = await checkinRequest(token, _ticket, widget.zone);
+    if (!mounted) return;
     if (res['success']) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(res['message']),
@@ -150,7 +154,9 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return const ScannerView();
+                        return ScannerView(
+                          onScan: _onScan,
+                        );
                       }));
                     },
                     child: Column(
