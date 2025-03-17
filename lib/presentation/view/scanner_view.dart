@@ -2,7 +2,8 @@ import 'package:essenciacompany_mobile/presentation/component/scanner_widget.dar
 import 'package:flutter/material.dart';
 
 class ScannerView extends StatefulWidget {
-  const ScannerView({super.key});
+  final Function(dynamic) onScan;
+  const ScannerView({super.key, required this.onScan});
 
   @override
   State<ScannerView> createState() => _ScannerViewState();
@@ -13,6 +14,6 @@ class _ScannerViewState extends State<ScannerView> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: ScannerWidget(onScan: (dynamic) {}));
+        body: ScannerWidget(onScan: widget.onScan));
   }
 }
