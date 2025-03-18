@@ -15,8 +15,6 @@ class _SelectZoneViewState extends State<SelectZoneView> {
   final TextEditingController _codeController = TextEditingController();
 
   void _onEnter({foodZone = false}) {
-    print('object');
-    print(_codeController.text);
     if (_codeController.text.isEmpty) {
       return;
     }
@@ -37,6 +35,18 @@ class _SelectZoneViewState extends State<SelectZoneView> {
         title: 'Check In & Out',
         codeController: _codeController,
         onEnter: () => _onEnter(),
+      );
+    }));
+  }
+
+  _selectFoodProducts() {
+    if (!mounted) return;
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return EnterCodeView(
+        icon: 'assets/icons/food.png',
+        title: 'Food & Products',
+        codeController: _codeController,
+        onEnter: () => _onEnter(foodZone: true),
       );
     }));
   }
@@ -74,16 +84,7 @@ class _SelectZoneViewState extends State<SelectZoneView> {
                 height: 26,
               ),
               SelectButton(
-                  icon: 'assets/icons/food.png',
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const EnterCodeView(
-                        icon: 'assets/icons/food.png',
-                        title: 'Food & Products',
-                      );
-                    }));
-                  }),
+                  icon: 'assets/icons/food.png', onTap: _selectFoodProducts),
             ])));
   }
 }
