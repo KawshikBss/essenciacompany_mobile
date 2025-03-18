@@ -27,10 +27,6 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
   }
 
   _onScan(dynamic) async {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(dynamic),
-      backgroundColor: Colors.green,
-    ));
     setState(() {
       _ticket = dynamic;
     });
@@ -41,13 +37,29 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
     if (!mounted) return;
     if (res['success']) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(res['message']),
-        backgroundColor: Colors.green,
+        content: Text(
+          res['message'] ?? 'CHECK IN SUCCESFULL',
+          style: GoogleFonts.roboto(
+              fontWeight: FontWeight.w700, fontSize: 25, color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: const Color(0xF272FF98),
+        behavior: SnackBarBehavior.floating,
+        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 22),
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 60),
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(res['message']),
-        backgroundColor: Colors.red,
+        content: Text(
+          res['message'] ?? 'CHECK IN FAILED',
+          style: GoogleFonts.roboto(
+              fontWeight: FontWeight.w700, fontSize: 25, color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: const Color(0xF2FF7272),
+        behavior: SnackBarBehavior.floating,
+        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 22),
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 60),
       ));
     }
   }
