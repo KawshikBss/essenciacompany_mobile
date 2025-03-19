@@ -1,6 +1,7 @@
 import 'package:essenciacompany_mobile/presentation/component/select_button.dart';
 import 'package:essenciacompany_mobile/presentation/view/checkin_checkout/checkin_checkout_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/enter_code_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/food_products/food_products_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,13 +19,15 @@ class _SelectZoneViewState extends State<SelectZoneView> {
     if (_codeController.text.isEmpty) {
       return;
     }
-    if (!foodZone) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return CheckinCheckoutView(
-          zone: _codeController.text,
-        );
-      }));
-    } else {}
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return foodZone
+          ? FoodProductsView(
+              zone: _codeController.text,
+            )
+          : CheckinCheckoutView(
+              zone: _codeController.text,
+            );
+    }));
   }
 
   _selectCheckInCheckOut() {
