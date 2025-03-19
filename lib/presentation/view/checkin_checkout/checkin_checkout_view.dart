@@ -34,7 +34,9 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
     Navigator.pop(context);
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    final res = await checkinRequest(token, _ticket, widget.zone);
+    final res = _selectedOption == Option.checkIn
+        ? await checkinRequest(token, _ticket, widget.zone)
+        : await checkoutRequest(token, _ticket, widget.zone);
     if (!mounted) return;
     if (res['success']) {
       CustomAlert.showCustomAlert(context,
