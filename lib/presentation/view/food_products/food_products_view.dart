@@ -34,7 +34,44 @@ class _FoodProductsViewState extends State<FoodProductsView> {
         _extras = extras;
       });
       CustomAlert.showCustomAlert(context,
-          message: res['message'] ?? 'SCAN SUCCESSFUL');
+          message: res['message'] ?? 'SCAN SUCCESSFUL', success: true);
+    } else {
+      CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'SCAN FAILED', success: false);
+    }
+  }
+
+  _handleGetUp(int id) {
+    if (_extras.isEmpty) return;
+    final extras = _extras;
+    for (var item in extras) {
+      if (item['id'] == id) {
+        final qty = int.parse(item['qty']);
+        item['qty'] = '${qty > 1 ? qty - 1 : qty}';
+      }
+    }
+    setState(() {
+      _extras = extras;
+    });
+  }
+
+  _submitGetUp() async {
+    if (_extras.isEmpty || _ticket == null || _ticket!.isEmpty) return;
+    Map<String, dynamic> extras = {};
+    for (var item in _extras) {
+      extras['${item['id']}'] = item['qty'];
+    }
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await withdrawExtraRequest(token, _ticket, widget.zone, extras);
+    if (res['success']) {
+      setState(() {
+        _extras = [];
+      });
+      CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'SCAN SUCCESSFUL',
+          success: true,
+          title: res['ticket']);
     } else {
       CustomAlert.showCustomAlert(context,
           message: res['message'] ?? 'SCAN FAILED', success: false);
@@ -54,116 +91,167 @@ class _FoodProductsViewState extends State<FoodProductsView> {
                   _extras.isEmpty
                       ? Image.asset(
                           'assets/icons/food.png',
-                          width: 100,
-                          height: 100,
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          height: MediaQuery.of(context).size.width * 0.6,
                         )
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(children: [
                             Container(
-                                decoration: BoxDecoration(boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x8FF36A30),
-                                    spreadRadius: 0,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 6),
-                                  )
-                                ], borderRadius: BorderRadius.circular(20)),
+                                decoration: BoxDecoration(
+                                    boxShadow: _extras.length > 2
+                                        ? const [
+                                            BoxShadow(
+                                              color: Color(0x8FF36A30),
+                                              spreadRadius: 0,
+                                              blurRadius: 5,
+                                              offset: Offset(0, 6),
+                                            )
+                                          ]
+                                        : null,
+                                    borderRadius: BorderRadius.circular(20)),
                                 clipBehavior: Clip.antiAlias,
                                 height:
                                     MediaQuery.of(context).size.height * 0.3,
                                 child: SingleChildScrollView(
-                                    child: Table(
-                                  border: TableBorder.all(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  children: [
-                                    TableRow(
-                                        decoration: const BoxDecoration(
-                                            color: Color(0xFFF36A30)),
-                                        children: [
-                                          Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Text(
-                                                'Name',
-                                                style: GoogleFonts.roboto(
-                                                    color: Colors.white,
-                                                    fontSize: 22,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                                textAlign: TextAlign.center,
-                                              )),
-                                          Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Text(
-                                                'Amount',
-                                                style: GoogleFonts.roboto(
-                                                    color: Colors.white,
-                                                    fontSize: 22,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                                textAlign: TextAlign.center,
-                                              )),
-                                          Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Text(
-                                                'Get up',
-                                                style: GoogleFonts.roboto(
-                                                    color: Colors.white,
-                                                    fontSize: 22,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                                textAlign: TextAlign.center,
-                                              ))
-                                        ]),
-                                    ..._extras.map((item) {
-                                      return TableRow(
-                                          decoration: const BoxDecoration(
-                                              color: Color(0xFFF36A30)),
-                                          children: [
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Text(
-                                                  item['name'],
-                                                  style: GoogleFonts.roboto(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                  textAlign: TextAlign.center,
-                                                )),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Text(
-                                                  item['qty'],
-                                                  style: GoogleFonts.roboto(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                  textAlign: TextAlign.center,
-                                                )),
-                                            IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(
-                                                Icons.swipe_down,
-                                              ),
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Color(0x8FF36A30),
+                                                spreadRadius: 0,
+                                                blurRadius: 5,
+                                                offset: Offset(0, 6),
+                                              )
+                                            ],
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Table(
+                                          border: TableBorder.all(
                                               color: Colors.white,
-                                              iconSize: 30,
-                                            )
-                                          ]);
-                                    })
-                                  ],
-                                ))),
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          children: [
+                                            TableRow(
+                                                decoration: const BoxDecoration(
+                                                    color: Color(0xFFF36A30)),
+                                                children: [
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10),
+                                                      child: Text(
+                                                        'Name',
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 22,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      )),
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10),
+                                                      child: Text(
+                                                        'Amount',
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 22,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      )),
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10),
+                                                      child: Text(
+                                                        'Get up',
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 22,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ))
+                                                ]),
+                                            ..._extras.map((item) {
+                                              return TableRow(
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: Color(
+                                                              0xFFF36A30)),
+                                                  children: [
+                                                    Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10),
+                                                        child: Text(
+                                                          item['name'],
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        )),
+                                                    Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10),
+                                                        child: Text(
+                                                          '${item['qty']}',
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        )),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        _handleGetUp(
+                                                            item['id']);
+                                                      },
+                                                      icon: const Icon(
+                                                        Icons.swipe_down,
+                                                      ),
+                                                      color: Colors.white,
+                                                      iconSize: 30,
+                                                    )
+                                                  ]);
+                                            })
+                                          ],
+                                        )))),
                             const SizedBox(
                               height: 10,
                             ),
                             Align(
                                 alignment: Alignment.centerRight,
                                 child: GestureDetector(
-                                  onTap: () {},
+                                  onTap: _submitGetUp,
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 6),
