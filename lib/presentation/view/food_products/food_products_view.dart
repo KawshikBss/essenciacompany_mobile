@@ -1,15 +1,229 @@
+import 'package:dotted_border/dotted_border.dart';
+import 'package:essenciacompany_mobile/domain/api_requests.dart';
+import 'package:essenciacompany_mobile/presentation/component/custom_alert.dart';
+import 'package:essenciacompany_mobile/presentation/component/layout/default_layout.dart';
+import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FoodProductsView extends StatefulWidget {
-  const FoodProductsView({super.key});
+  final String? zone;
+  const FoodProductsView({super.key, this.zone});
 
   @override
   State<FoodProductsView> createState() => _FoodProductsViewState();
 }
 
 class _FoodProductsViewState extends State<FoodProductsView> {
+  String? _ticket;
+  List<Map<String, dynamic>> _extras = [];
+
+  _onScan(ticket) async {
+    setState(() {
+      _ticket = ticket;
+    });
+    Navigator.pop(context);
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await getExtrasRequest(token, _ticket);
+    if (!mounted) return;
+    if (res['success']) {
+      final extras = res['extras'];
+      setState(() {
+        _extras = extras;
+      });
+      CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'SCAN SUCCESSFUL');
+    } else {
+      CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'SCAN FAILED', success: false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Text('Food Products View');
+    return DefaultLayout(
+        child: SizedBox(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _extras.isEmpty
+                      ? Image.asset(
+                          'assets/icons/food.png',
+                          width: 100,
+                          height: 100,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(children: [
+                            Container(
+                                decoration: BoxDecoration(boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x8FF36A30),
+                                    spreadRadius: 0,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 6),
+                                  )
+                                ], borderRadius: BorderRadius.circular(20)),
+                                clipBehavior: Clip.antiAlias,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
+                                child: SingleChildScrollView(
+                                    child: Table(
+                                  border: TableBorder.all(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  children: [
+                                    TableRow(
+                                        decoration: const BoxDecoration(
+                                            color: Color(0xFFF36A30)),
+                                        children: [
+                                          Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: Text(
+                                                'Name',
+                                                style: GoogleFonts.roboto(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: Text(
+                                                'Amount',
+                                                style: GoogleFonts.roboto(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: Text(
+                                                'Get up',
+                                                style: GoogleFonts.roboto(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                textAlign: TextAlign.center,
+                                              ))
+                                        ]),
+                                    ..._extras.map((item) {
+                                      return TableRow(
+                                          decoration: const BoxDecoration(
+                                              color: Color(0xFFF36A30)),
+                                          children: [
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                child: Text(
+                                                  item['name'],
+                                                  style: GoogleFonts.roboto(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                  textAlign: TextAlign.center,
+                                                )),
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                child: Text(
+                                                  item['qty'],
+                                                  style: GoogleFonts.roboto(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                  textAlign: TextAlign.center,
+                                                )),
+                                            IconButton(
+                                              onPressed: () {},
+                                              icon: const Icon(
+                                                Icons.swipe_down,
+                                              ),
+                                              color: Colors.white,
+                                              iconSize: 30,
+                                            )
+                                          ]);
+                                    })
+                                  ],
+                                ))),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Align(
+                                alignment: Alignment.centerRight,
+                                child: GestureDetector(
+                                  onTap: () {},
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xFFF36A30),
+                                        borderRadius: BorderRadius.circular(6)),
+                                    child: Text(
+                                      'Get Up',
+                                      style: GoogleFonts.roboto(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ))
+                          ])),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ScannerView(
+                          onScan: _onScan,
+                        );
+                      }));
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Scan Ticket',
+                            style: GoogleFonts.roboto(
+                                fontSize: 42, fontWeight: FontWeight.w200)),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        DottedBorder(
+                            color: Colors.black,
+                            strokeWidth: 4.0,
+                            radius: const Radius.circular(30),
+                            dashPattern: const [10],
+                            child: const SizedBox(
+                                height: 200,
+                                width: 200,
+                                child: Icon(
+                                  Icons.qr_code_scanner,
+                                  size: 180,
+                                ))),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text('Door ${widget.zone}',
+                            style: GoogleFonts.roboto(
+                                fontSize: 40, fontWeight: FontWeight.w700)),
+                      ],
+                    ),
+                  )
+                ])));
   }
 }
