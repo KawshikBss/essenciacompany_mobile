@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:essenciacompany_mobile/domain/api_requests.dart';
+import 'package:essenciacompany_mobile/presentation/component/custom_alert.dart';
 import 'package:essenciacompany_mobile/presentation/component/layout/default_layout.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +27,9 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
     });
   }
 
-  _onScan(dynamic) async {
+  _onScan(ticket) async {
     setState(() {
-      _ticket = dynamic;
+      _ticket = ticket;
     });
     Navigator.pop(context);
     final prefs = await SharedPreferences.getInstance();
@@ -36,31 +37,11 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
     final res = await checkinRequest(token, _ticket, widget.zone);
     if (!mounted) return;
     if (res['success']) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          res['message'] ?? 'CHECK IN SUCCESFULL',
-          style: GoogleFonts.roboto(
-              fontWeight: FontWeight.w700, fontSize: 25, color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: const Color(0xF272FF98),
-        behavior: SnackBarBehavior.floating,
-        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 22),
-        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 60),
-      ));
+      CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'CHECK IN SUCCESSFUL');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          res['message'] ?? 'CHECK IN FAILED',
-          style: GoogleFonts.roboto(
-              fontWeight: FontWeight.w700, fontSize: 25, color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: const Color(0xF2FF7272),
-        behavior: SnackBarBehavior.floating,
-        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 22),
-        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 60),
-      ));
+      CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'CHECK IN FAILED', success: false);
     }
   }
 
