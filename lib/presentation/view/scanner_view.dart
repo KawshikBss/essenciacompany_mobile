@@ -14,6 +14,6 @@ class _ScannerViewState extends State<ScannerView> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: ScannerWidget(onScan: widget.onScan));
+        body: SafeArea(child: ScannerWidget(onScan: widget.onScan)));
   }
 }
