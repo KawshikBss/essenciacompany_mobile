@@ -152,3 +152,33 @@ Future<Map<String, dynamic>> withdrawExtraRequest(String? token, String? ticket,
     };
   }
 }
+
+Future<Map<String, dynamic>> getZoneType(String? token, String? zone) async {
+  Map<String, dynamic> res = {"success": false, "message": "Invalid"};
+
+  if (token == null || token.isEmpty || zone == null || zone.isEmpty) {
+    return res;
+  }
+
+  final response = await http.post(
+      Uri.parse('https://events.essenciacompany.com/api/app/zone-type'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'zone': zone,
+      }));
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return {
+      'success': true,
+      'type': data['food_zone'] == true ? 'food' : 'checkin-checkout',
+      'message': data['message'] ?? data['food_zone'] == true
+          ? 'Food & Products zone'
+          : 'Check in & Check out zone',
+    };
+  }
+
+  return res;
+}
