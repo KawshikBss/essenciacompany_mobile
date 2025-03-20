@@ -33,24 +33,14 @@ class _SelectZoneViewState extends State<SelectZoneView> {
   _selectCheckInCheckOut() {
     if (!mounted) return;
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EnterCodeView(
-        icon: 'assets/icons/door-open.png',
-        title: 'Check In & Out',
-        codeController: _codeController,
-        onEnter: () => _onEnter(),
-      );
+      return EnterCodeView();
     }));
   }
 
   _selectFoodProducts() {
     if (!mounted) return;
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EnterCodeView(
-        icon: 'assets/icons/food.png',
-        title: 'Food & Products',
-        codeController: _codeController,
-        onEnter: () => _onEnter(foodZone: true),
-      );
+      return EnterCodeView();
     }));
   }
 
