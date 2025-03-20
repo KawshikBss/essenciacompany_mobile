@@ -35,7 +35,7 @@ class _LoginViewState extends State<LoginView> {
     if (res['success']) {
       await prefs!.setString('token', res['token']);
       await prefs!.setString('user', jsonEncode(res['user']));
-      Navigator.pushNamed(context, '/select_zone');
+      Navigator.pushNamed(context, '/enter-code');
     }
   }
 
@@ -46,7 +46,7 @@ class _LoginViewState extends State<LoginView> {
     });
     final token = prefs!.getString('token');
     if (token != null && token.isNotEmpty) {
-      Navigator.pushNamed(context, '/select_zone');
+      Navigator.pushNamed(context, '/enter-code');
     }
   }
 
