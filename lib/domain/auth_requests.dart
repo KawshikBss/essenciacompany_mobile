@@ -13,9 +13,9 @@ Future<Map<String, dynamic>> login(String email, String password) async {
       'password': password,
     }),
   );
+  final data = jsonDecode(response.body);
 
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
     return {
       'success': true,
       'token': data['token'],
@@ -24,7 +24,7 @@ Future<Map<String, dynamic>> login(String email, String password) async {
   } else {
     return {
       'success': false,
-      'message': 'Invalid credentials',
+      'message': data['error'],
     };
   }
 }
