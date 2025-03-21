@@ -40,10 +40,14 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
     if (!mounted) return;
     if (res['success']) {
       CustomAlert.showCustomAlert(context,
-          message: res['message'] ?? 'CHECK IN SUCCESSFUL');
+          message: res['message'] ??
+              'CHECK ${_selectedOption == Option.checkIn ? 'IN' : 'OUT'} SUCCESSFUL',
+          success: true);
     } else {
       CustomAlert.showCustomAlert(context,
-          message: res['message'] ?? 'CHECK IN FAILED', success: false);
+          message: res['error'] ??
+              'CHECK ${_selectedOption == Option.checkIn ? 'IN' : 'OUT'} FAILED',
+          success: false);
     }
   }
 
