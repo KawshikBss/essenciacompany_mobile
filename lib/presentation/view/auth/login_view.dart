@@ -5,6 +5,7 @@ import 'package:essenciacompany_mobile/presentation/component/form_widget.dart';
 import 'package:essenciacompany_mobile/presentation/component/layout/auth_layout.dart';
 import 'package:essenciacompany_mobile/presentation/component/text_input.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
@@ -36,6 +37,16 @@ class _LoginViewState extends State<LoginView> {
       await prefs!.setString('token', res['token']);
       await prefs!.setString('user', jsonEncode(res['user']));
       Navigator.pushNamed(context, '/enter-code');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          res['message'],
+          style: GoogleFonts.roboto(
+              color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        backgroundColor: const Color(0xF2760000),
+      ));
     }
   }
 
