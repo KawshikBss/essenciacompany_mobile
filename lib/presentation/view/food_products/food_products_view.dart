@@ -91,8 +91,8 @@ class _FoodProductsViewState extends State<FoodProductsView> {
                   _extras.isEmpty
                       ? Image.asset(
                           'assets/icons/food.png',
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          height: MediaQuery.of(context).size.width * 0.6,
+                          width: MediaQuery.of(context).size.width * 0.65,
+                          height: MediaQuery.of(context).size.width * 0.65,
                         )
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
