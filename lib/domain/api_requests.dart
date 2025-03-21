@@ -35,7 +35,7 @@ Future<Map<String, dynamic>> checkinRequest(
   } else {
     return {
       'success': false,
-      'message': data['error'],
+      'message': data['error'] ?? data['message'],
     };
   }
 }
@@ -66,14 +66,11 @@ Future<Map<String, dynamic>> checkoutRequest(
 
   final data = jsonDecode(response.body);
   if (response.statusCode == 200) {
-    return {
-      'success': true,
-      'data': data['data'],
-    };
+    return {'success': true, 'data': data['data'], 'message': data['message']};
   } else {
     return {
       'success': false,
-      'message': data['error'],
+      'message': data['error'] ?? data['message'],
     };
   }
 }
@@ -109,7 +106,7 @@ Future<Map<String, dynamic>> getExtrasRequest(
   } else {
     return {
       'success': false,
-      'message': data['error'],
+      'message': data['error'] ?? data['message'],
     };
   }
 }
@@ -169,6 +166,7 @@ Future<Map<String, dynamic>> getZoneType(String? token, String? zone) async {
       body: jsonEncode(<String, dynamic>{
         'zone': zone,
       }));
+  print(response.body);
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
     return {
@@ -178,6 +176,9 @@ Future<Map<String, dynamic>> getZoneType(String? token, String? zone) async {
           ? 'Food & Products zone'
           : 'Check in & Check out zone',
     };
+  } else if (response.statusCode == 401) {
+    final data = jsonDecode(response.body);
+    return {'success': false, 'message': data['error']};
   }
 
   return res;
