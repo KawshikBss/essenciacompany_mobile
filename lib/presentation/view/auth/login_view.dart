@@ -30,6 +30,15 @@ class _LoginViewState extends State<LoginView> {
     if (_emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         prefs == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          'Email and Password is required',
+          style: GoogleFonts.roboto(
+              color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        backgroundColor: const Color(0xF2760000),
+      ));
       return;
     }
     final res = await login(_emailController.text, _passwordController.text);
@@ -37,6 +46,16 @@ class _LoginViewState extends State<LoginView> {
       await prefs!.setString('token', res['token']);
       await prefs!.setString('user', jsonEncode(res['user']));
       Navigator.pushNamed(context, '/enter-code');
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          'Welcome back ${res['user']['name']} ${res['user']['l_name']}',
+          style: GoogleFonts.roboto(
+              color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        backgroundColor: const Color(0xF2005316),
+      ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
@@ -100,10 +119,10 @@ class _LoginViewState extends State<LoginView> {
                           color: const Color(0xFFF36A30),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             'LOGIN',
-                            style: TextStyle(
+                            style: GoogleFonts.roboto(
                               color: Colors.white,
                               fontSize: 25,
                               fontWeight: FontWeight.w400,
