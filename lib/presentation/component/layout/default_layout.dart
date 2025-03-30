@@ -46,7 +46,7 @@ class _DefaultLayoutState extends State<DefaultLayout> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: CustomAppBar.showCustomAppBar(context),
-        drawer: CustomAppDrawer.showCustomAppDrawer(
+        drawer: CustomAppDrawer.showCustomAppDrawer(context,
             user: _user, onLogout: onLogout),
         body: SafeArea(child: SingleChildScrollView(child: widget.child)));
   }
