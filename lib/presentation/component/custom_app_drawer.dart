@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomAppDrawer {
-  static showCustomAppDrawer({Map<String, dynamic>? user, Function? onLogout}) {
+  static showCustomAppDrawer(context,
+      {Map<String, dynamic>? user, Function? onLogout}) {
+    print(user);
     return Drawer(
       shadowColor: const Color(0x8FF36A30),
       child: Padding(
@@ -29,7 +31,7 @@ class CustomAppDrawer {
                         '${user['name']} ${user['l_name']}',
                         style: GoogleFonts.roboto(
                           color: const Color(0xFFF36A30),
-                          fontSize: 28,
+                          fontSize: 26,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -37,7 +39,7 @@ class CustomAppDrawer {
                         '${user['email']}',
                         style: GoogleFonts.roboto(
                           color: Colors.black,
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -46,12 +48,113 @@ class CustomAppDrawer {
                 )
               else
                 const SizedBox.shrink(),
+              if (user != null && user['role_id'] == 6)
+                Column(children: [
+                  ListTile(
+                    title: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/pos/tickets');
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.airplane_ticket,
+                                color: Color(0xFFF36A30),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Tickets',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16,
+                                  color: const Color(0xFFF36A30),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
+                            ])),
+                  ),
+                  ListTile(
+                    title: GestureDetector(
+                        onTap: () {},
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.local_drink_rounded,
+                                color: Color(0xFFF36A30),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Extras',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16,
+                                  color: const Color(0xFFF36A30),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
+                            ])),
+                  ),
+                  ListTile(
+                    title: GestureDetector(
+                        onTap: () {},
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.qr_code,
+                                color: Color(0xFFF36A30),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Scan',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16,
+                                  color: const Color(0xFFF36A30),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
+                            ])),
+                  ),
+                  ListTile(
+                    title: GestureDetector(
+                        onTap: () {},
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.file_present_rounded,
+                                color: Color(0xFFF36A30),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Reports',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16,
+                                  color: const Color(0xFFF36A30),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
+                            ])),
+                  )
+                ]),
               GestureDetector(
                 onTap: () {
                   if (onLogout != null) onLogout();
                 },
                 child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                         color: const Color(0xFFF36A30),
                         borderRadius: BorderRadius.circular(8)),
@@ -61,7 +164,7 @@ class CustomAppDrawer {
                       children: [
                         const Icon(
                           Icons.logout,
-                          size: 32,
+                          size: 18,
                           color: Colors.white,
                         ),
                         const SizedBox(
@@ -70,7 +173,7 @@ class CustomAppDrawer {
                         Text(
                           'Logout',
                           style: GoogleFonts.roboto(
-                            fontSize: 20,
+                            fontSize: 16,
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
                           ),
