@@ -4,38 +4,27 @@ class CustomAppBar {
   static showCustomAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
+      backgroundColor: Colors.transparent,
       title: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /* const Image(
-                image: AssetImage('assets/logo.png'),
-                height: 60,
-                fit: BoxFit.fitHeight,
-              ), */
               Builder(
                 builder: (context) {
                   return IconButton(
-                    icon: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x8FF36A30),
-                            spreadRadius: 0,
-                            blurRadius: 3,
-                            offset: Offset(2, 2),
-                          )
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.menu),
-                      ),
+                    icon: const Icon(
+                      Icons.menu,
+                      // size: 30,
+                      shadows: [
+                        BoxShadow(
+                          color: Color(0x8FF36A30),
+                          spreadRadius: 2,
+                          blurRadius: 3,
+                          offset: Offset(1, 1),
+                        )
+                      ],
                     ),
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
@@ -44,6 +33,53 @@ class CustomAppBar {
                   );
                 },
               ),
+            ],
+          )),
+    );
+  }
+
+  static showPosAppBar(BuildContext context, {String? title}) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      forceMaterialTransparency: true,
+      flexibleSpace: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          color: Colors.blueGrey,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title ?? 'POS',
+                style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.loop),
+                    color: Colors.white,
+                    iconSize: 30,
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.search),
+                    color: Colors.white,
+                    iconSize: 30,
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.more_vert),
+                    color: Colors.white,
+                    iconSize: 30,
+                  ),
+                ],
+              )
             ],
           )),
     );
