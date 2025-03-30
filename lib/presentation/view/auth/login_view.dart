@@ -75,7 +75,15 @@ class _LoginViewState extends State<LoginView> {
       prefs = ins;
     });
     final token = prefs!.getString('token');
+    final user = prefs!.getString('user');
     if (token != null && token.isNotEmpty) {
+      if (user != null && user.isNotEmpty) {
+        final userData = jsonDecode(user);
+        if (userData['role_id'] == 6) {
+          Navigator.pushNamed(context, '/pos/shop');
+          return;
+        }
+      }
       Navigator.pushNamed(context, '/enter-code');
     }
   }
