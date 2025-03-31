@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class PosLayout extends StatefulWidget {
   final Widget child;
-  const PosLayout({super.key, required this.child});
+  final String? title;
+  final Function? onRefresh;
+  const PosLayout({super.key, required this.child, this.title, this.onRefresh});
 
   @override
   State<PosLayout> createState() => _PosLayoutState();
@@ -20,7 +22,8 @@ class _PosLayoutState extends State<PosLayout> {
     return Scaffold(
         backgroundColor: Colors.grey[300],
         extendBodyBehindAppBar: true,
-        appBar: CustomAppBar.showPosAppBar(context),
+        appBar: CustomAppBar.showPosAppBar(context,
+            title: widget.title, onRefresh: widget.onRefresh),
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Padding(

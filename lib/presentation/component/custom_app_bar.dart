@@ -38,7 +38,8 @@ class CustomAppBar {
     );
   }
 
-  static showPosAppBar(BuildContext context, {String? title}) {
+  static showPosAppBar(BuildContext context,
+      {String? title, Function? onRefresh}) {
     return AppBar(
       automaticallyImplyLeading: false,
       forceMaterialTransparency: true,
@@ -61,7 +62,11 @@ class CustomAppBar {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (onRefresh != null) {
+                        onRefresh();
+                      }
+                    },
                     icon: const Icon(Icons.loop),
                     color: Colors.white,
                     iconSize: 30,
