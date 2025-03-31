@@ -45,7 +45,11 @@ class _LoginViewState extends State<LoginView> {
     if (res['success']) {
       await prefs!.setString('token', res['token']);
       await prefs!.setString('user', jsonEncode(res['user']));
-      Navigator.pushNamed(context, '/enter-code');
+      if (res['user']['role_id'] == 6) {
+        Navigator.pushNamed(context, '/pos/shop');
+      } else {
+        Navigator.pushNamed(context, '/enter-code');
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
