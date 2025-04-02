@@ -1,3 +1,4 @@
+import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/payment_dialog.dart';
 import 'package:flutter/material.dart';
 
 class OrderDialog extends StatefulWidget {
@@ -140,29 +141,47 @@ class _OrderDialogState extends State<OrderDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 10),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: const Color(0xff28badf), width: 4)),
-                        child: const Text(
-                          'Card',
-                        ),
-                      ),
+                      GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const PaymentDialog();
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0xff28badf), width: 4)),
+                            child: const Text(
+                              'Card',
+                            ),
+                          )),
                       const SizedBox(
                         width: 10,
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 10),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: const Color(0xff28badf), width: 4)),
-                        child: const Text(
-                          'Withdraw',
-                        ),
-                      ),
+                      GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const PaymentDialog();
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0xff28badf), width: 4)),
+                            child: const Text(
+                              'Withdraw',
+                            ),
+                          )),
                     ],
                   )
                 ],
