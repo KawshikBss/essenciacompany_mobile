@@ -1,3 +1,4 @@
+import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/menu_dialog.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar {
@@ -78,7 +79,12 @@ class CustomAppBar {
                     iconSize: 30,
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => const MenuDialog(),
+                      );
+                    },
                     icon: const Icon(Icons.more_vert),
                     color: Colors.white,
                     iconSize: 30,
