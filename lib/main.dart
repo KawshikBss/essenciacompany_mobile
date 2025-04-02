@@ -1,5 +1,6 @@
 import 'package:essenciacompany_mobile/presentation/view/auth/login_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/enter_code_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/pos/orders_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/pos_shop_view.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginView(),
         '/enter-code': (context) => const EnterCodeView(),
-        '/pos/shop': (context) => const PosShopView()
+        '/pos/shop': (context) => const PosShopView(),
+        '/pos/orders': (context) => const OrdersView(),
       },
     );
   }
