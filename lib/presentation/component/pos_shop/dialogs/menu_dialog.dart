@@ -42,7 +42,9 @@ class _MenuDialogState extends State<MenuDialog> {
             height: 10,
           ),
           GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/pos/orders');
+              },
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(10),
@@ -63,7 +65,9 @@ class _MenuDialogState extends State<MenuDialog> {
             height: 10,
           ),
           GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/pos/shop');
+              },
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(10),
