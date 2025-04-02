@@ -1,6 +1,7 @@
 import 'package:essenciacompany_mobile/core/cart_service.dart';
 import 'package:essenciacompany_mobile/domain/shop_requests.dart';
 import 'package:essenciacompany_mobile/presentation/component/layout/pos_layout.dart';
+import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/order_dialog.dart';
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -108,7 +109,11 @@ class _PosShopViewState extends State<PosShopView> {
                                 fontWeight: FontWeight.w900),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => OrderDialog());
+                            },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 2, horizontal: 10),
