@@ -25,8 +25,8 @@ class CartService {
       items.add(newItem);
     } else {
       int newQty = items[exists]['quantity'] + 1;
-      double price = items[exists]['price'];
-      double newPrice = newQty * price;
+      int price = items[exists]['price'];
+      int newPrice = newQty * price;
       items[exists]['quantity'] = newQty;
       items[exists]['itemTotal'] = newPrice;
     }
