@@ -33,7 +33,7 @@ class ProductItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            name,
+            name.length > 10 ? '${name.substring(0, 10)}...' : name,
             style: const TextStyle(
                 color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
           ),
