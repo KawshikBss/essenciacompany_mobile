@@ -1,4 +1,5 @@
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/menu_dialog.dart';
+import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/pos_menu_dialog.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar {
@@ -15,22 +16,14 @@ class CustomAppBar {
               Builder(
                 builder: (context) {
                   return IconButton(
-                    icon: const Icon(
-                      Icons.menu,
-                      // size: 30,
-                      shadows: [
-                        BoxShadow(
-                          color: Color(0x8FF36A30),
-                          spreadRadius: 2,
-                          blurRadius: 3,
-                          offset: Offset(1, 1),
-                        )
-                      ],
-                    ),
                     onPressed: () {
-                      Scaffold.of(context).openDrawer();
+                      showDialog(
+                          context: context,
+                          builder: (context) => const MenuDialog());
                     },
-                    iconSize: 32,
+                    icon: const Icon(Icons.more_vert),
+                    // color: Colors.white,
+                    iconSize: 30,
                   );
                 },
               ),
@@ -82,7 +75,8 @@ class CustomAppBar {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (BuildContext context) => const MenuDialog(),
+                        builder: (BuildContext context) =>
+                            const PosMenuDialog(),
                       );
                     },
                     icon: const Icon(Icons.more_vert),
