@@ -28,7 +28,7 @@ class PaymentConfirmDialog extends StatelessWidget {
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-            color: Colors.greenAccent,
+            color: Colors.green,
             child: const Text(
               'Success',
               style: TextStyle(
