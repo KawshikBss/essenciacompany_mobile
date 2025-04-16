@@ -100,7 +100,7 @@ Future<Map<String, dynamic>> getExtrasRequest(
     return {
       'success': true,
       'ticket': data['ticket'],
-      'message': 'SCAN SUCCESSFULL',
+      'message': data['message'] ?? 'SCAN SUCCESSFULL',
       'extras': extras,
     };
   } else {
@@ -136,16 +136,16 @@ Future<Map<String, dynamic>> withdrawExtraRequest(String? token, String? ticket,
         'zone': zone,
         'withdraw': withdraw
       }));
+  final data = jsonDecode(response.body);
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
     return {
       'success': true,
-      'message': data['success_msg'],
+      'message': data['message'],
     };
   } else {
     return {
       'success': false,
-      'message': 'UNSUCCESSFULL',
+      'message': data['error'] ?? data['message'],
     };
   }
 }

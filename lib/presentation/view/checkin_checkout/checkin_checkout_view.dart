@@ -1,9 +1,9 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:essenciacompany_mobile/domain/api_requests.dart';
-import 'package:essenciacompany_mobile/presentation/component/custom_alert.dart';
 import 'package:essenciacompany_mobile/presentation/component/layout/default_layout.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,23 +39,38 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
         : await checkoutRequest(token, _ticket, widget.zone);
     if (!mounted) return;
     if (res['success']) {
-      CustomAlert.showCustomAlert(context,
+      /* CustomAlert.showCustomAlert(context,
           message: res['message'] ??
               'CHECK ${_selectedOption == Option.checkIn ? 'IN' : 'OUT'} SUCCESSFUL',
-          success: true);
+          success: true); */
+      Fluttertoast.showToast(
+          msg: res['message'] ??
+              'CHECK ${_selectedOption == Option.checkIn ? 'IN' : 'OUT'} SUCCESSFUL',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
     } else {
-      CustomAlert.showCustomAlert(context,
+      /* CustomAlert.showCustomAlert(context,
           message: res['error'] ??
               'CHECK ${_selectedOption == Option.checkIn ? 'IN' : 'OUT'} FAILED',
-          success: false);
+          success: false); */
+      Fluttertoast.showToast(
+          msg: res['message'] ??
+              'CHECK ${_selectedOption == Option.checkIn ? 'IN' : 'OUT'} FAILED',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
+        scroll: false,
         child: Container(
-            padding: const EdgeInsets.only(right: 24, top: 58, left: 24),
+            padding: const EdgeInsets.only(right: 24, top: 42, left: 24),
             height: MediaQuery.of(context).size.height,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -145,6 +160,41 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
                             ),
                           )),
                     ],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/enter-code');
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x35000000),
+                            spreadRadius: 0,
+                            blurRadius: 4,
+                            offset: Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          'New Session',
+                          style: GoogleFonts.roboto(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     height: 30,

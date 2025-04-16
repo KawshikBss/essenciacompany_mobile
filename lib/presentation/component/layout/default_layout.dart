@@ -7,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DefaultLayout extends StatefulWidget {
   final Widget child;
-  const DefaultLayout({super.key, required this.child});
+  final bool scroll;
+  const DefaultLayout({super.key, required this.child, this.scroll = true});
 
   @override
   State<DefaultLayout> createState() => _DefaultLayoutState();
@@ -48,6 +49,9 @@ class _DefaultLayoutState extends State<DefaultLayout> {
         appBar: CustomAppBar.showCustomAppBar(context),
         drawer: CustomAppDrawer.showCustomAppDrawer(context,
             user: _user, onLogout: onLogout),
-        body: SafeArea(child: SingleChildScrollView(child: widget.child)));
+        body: SafeArea(
+            child: widget.scroll
+                ? SingleChildScrollView(child: widget.child)
+                : widget.child));
   }
 }

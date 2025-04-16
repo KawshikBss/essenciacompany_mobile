@@ -1,4 +1,5 @@
 import 'package:essenciacompany_mobile/presentation/view/auth/login_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/checkin_checkout/checkin_checkout_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/enter_code_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/orders_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/pos_shop_view.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginView(),
+      home: const CheckinCheckoutView(),
       routes: {
         '/login': (context) => const LoginView(),
         '/enter-code': (context) => const EnterCodeView(),

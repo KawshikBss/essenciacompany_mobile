@@ -4,6 +4,7 @@ import 'package:essenciacompany_mobile/presentation/component/custom_alert.dart'
 import 'package:essenciacompany_mobile/presentation/component/layout/default_layout.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -68,13 +69,25 @@ class _FoodProductsViewState extends State<FoodProductsView> {
       setState(() {
         _extras = [];
       });
-      CustomAlert.showCustomAlert(context,
+      /* CustomAlert.showCustomAlert(context,
           message: res['message'] ?? 'SCAN SUCCESSFUL',
           success: true,
-          title: res['ticket']);
+          title: res['ticket']); */
+      Fluttertoast.showToast(
+          msg: res['message'] ?? 'SCAN SUCCESSFUL',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
     } else {
-      CustomAlert.showCustomAlert(context,
-          message: res['message'] ?? 'SCAN FAILED', success: false);
+      /* CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'SCAN FAILED', success: false); */
+      Fluttertoast.showToast(
+          msg: res['message'] ?? 'SCAN FAILED',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
