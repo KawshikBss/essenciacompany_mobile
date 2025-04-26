@@ -1,6 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:essenciacompany_mobile/domain/api_requests.dart';
-import 'package:essenciacompany_mobile/presentation/component/custom_alert.dart';
 import 'package:essenciacompany_mobile/presentation/component/layout/default_layout.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +33,23 @@ class _FoodProductsViewState extends State<FoodProductsView> {
       setState(() {
         _extras = extras;
       });
-      CustomAlert.showCustomAlert(context,
-          message: res['message'] ?? 'SCAN SUCCESSFUL', success: true);
+      /* CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'SCAN SUCCESSFUL', success: true); */
+      Fluttertoast.showToast(
+          msg: res['message'] ?? 'SCAN SUCCESSFUL',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
     } else {
-      CustomAlert.showCustomAlert(context,
-          message: res['message'] ?? 'SCAN FAILED', success: false);
+      /* CustomAlert.showCustomAlert(context,
+          message: res['message'] ?? 'SCAN FAILED', success: false); */
+      Fluttertoast.showToast(
+          msg: res['message'] ?? 'SCAN FAILED',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
@@ -76,7 +87,7 @@ class _FoodProductsViewState extends State<FoodProductsView> {
       Fluttertoast.showToast(
           msg: res['message'] ?? 'SCAN SUCCESSFUL',
           gravity: ToastGravity.CENTER,
-          backgroundColor: Color(0xFFF36A30),
+          backgroundColor: const Color(0xFFF36A30),
           textColor: Colors.white,
           fontSize: 16.0);
     } else {
@@ -85,15 +96,25 @@ class _FoodProductsViewState extends State<FoodProductsView> {
       Fluttertoast.showToast(
           msg: res['message'] ?? 'SCAN FAILED',
           gravity: ToastGravity.CENTER,
-          backgroundColor: Color(0xFFF36A30),
+          backgroundColor: const Color(0xFFF36A30),
           textColor: Colors.white,
           fontSize: 16.0);
     }
   }
 
+  getExtrasQty() {
+    int total = 0;
+    for (var extra in _extras) {
+      int qty = int.tryParse(extra['qty']) ?? 0;
+      total += qty;
+    }
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
+        scroll: false,
         child: SizedBox(
             width: double.infinity,
             height: MediaQuery.of(context).size.height,
@@ -261,26 +282,28 @@ class _FoodProductsViewState extends State<FoodProductsView> {
                             const SizedBox(
                               height: 10,
                             ),
-                            Align(
-                                alignment: Alignment.centerRight,
-                                child: GestureDetector(
-                                  onTap: _submitGetUp,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 6),
-                                    decoration: BoxDecoration(
-                                        color: const Color(0xFFF36A30),
-                                        borderRadius: BorderRadius.circular(6)),
-                                    child: Text(
-                                      'Get Up',
-                                      style: GoogleFonts.roboto(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w700),
-                                      textAlign: TextAlign.center,
+                            if (getExtrasQty() > 0)
+                              Align(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                    onTap: _submitGetUp,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 6),
+                                      decoration: BoxDecoration(
+                                          color: const Color(0xFFF36A30),
+                                          borderRadius:
+                                              BorderRadius.circular(6)),
+                                      child: Text(
+                                        'Get Up',
+                                        style: GoogleFonts.roboto(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
-                                  ),
-                                ))
+                                  ))
                           ])),
                   const SizedBox(
                     height: 40,
