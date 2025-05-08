@@ -360,7 +360,7 @@ class _WalletViewState extends State<WalletView> {
                         )),
                         TableCell(
                             child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          margin: const EdgeInsets.only(left: 10),
                           padding: const EdgeInsets.all(16),
                           decoration: const BoxDecoration(
                               color: Colors.white,
@@ -390,41 +390,42 @@ class _WalletViewState extends State<WalletView> {
                             ],
                           ),
                         )),
-                        TableCell(
-                            child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFFF2500B),
-                                  offset: Offset(5, 5),
-                                )
-                              ]),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Total\nTransaction',
-                                style: TextStyle(
-                                    color: Color(0xFFBD3D06), fontSize: 16),
-                                textAlign: TextAlign.start,
-                              ),
-                              const SizedBox(height: 8),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                    _totalTransaction != null
-                                        ? 'Є$_totalTransaction'
-                                        : 'N/A',
-                                    style: const TextStyle(fontSize: 24),
-                                    textAlign: TextAlign.end),
-                              )
-                            ],
-                          ),
-                        ))
                       ])
                     ],
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration:
+                        const BoxDecoration(color: Colors.white, boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFF2500B),
+                        offset: Offset(5, 5),
+                      )
+                    ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Total\nTransaction',
+                          style:
+                              TextStyle(color: Color(0xFFBD3D06), fontSize: 16),
+                          textAlign: TextAlign.start,
+                        ),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                              _totalTransaction != null
+                                  ? 'Є$_totalTransaction'
+                                  : 'N/A',
+                              style: const TextStyle(fontSize: 24),
+                              textAlign: TextAlign.end),
+                        )
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 24,
