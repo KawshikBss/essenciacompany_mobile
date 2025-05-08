@@ -1,4 +1,4 @@
-package com.example.essenciacompany_mobile
+package com.essenciacompany.essenciacompany_mobile
 
 import io.flutter.embedding.android.FlutterActivity
 
