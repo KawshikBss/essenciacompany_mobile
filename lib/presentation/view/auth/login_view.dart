@@ -47,6 +47,8 @@ class _LoginViewState extends State<LoginView> {
       await prefs!.setString('user', jsonEncode(res['user']));
       if (res['user']['role_id'] == 6) {
         Navigator.pushNamed(context, '/pos/shop');
+      } else if (res['user']['role_id'] == 8) {
+        Navigator.pushNamed(context, '/wallet');
       } else {
         Navigator.pushNamed(context, '/enter-code');
       }
@@ -85,6 +87,9 @@ class _LoginViewState extends State<LoginView> {
         final userData = jsonDecode(user);
         if (userData['role_id'] == 6) {
           Navigator.pushNamed(context, '/pos/shop');
+          return;
+        } else if (userData['role_id'] == 8) {
+          Navigator.pushNamed(context, '/wallet');
           return;
         }
       }
