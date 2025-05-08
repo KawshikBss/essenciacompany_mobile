@@ -2,6 +2,7 @@ import 'package:essenciacompany_mobile/core/utils.dart';
 import 'package:essenciacompany_mobile/domain/wallet_requests.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WalletView extends StatefulWidget {
@@ -18,7 +19,9 @@ class _WalletViewState extends State<WalletView> {
   Map<String, dynamic>? _user;
   List<dynamic> _transactions = [];
   final TextEditingController _amount = TextEditingController();
-  String _withdrawType = 'refund';
+  String _withdrawType = 'deposit';
+
+  bool _isCompleting = false;
 
   @override
   void initState() {
@@ -32,16 +35,10 @@ class _WalletViewState extends State<WalletView> {
     final res = await getWalletData(token: token);
     if (res['success']) {
       setState(() {
-        _deposit = double.tryParse('${res['data']['deposit'] ?? 0}')
-                ?.toStringAsPrecision(3) ??
-            'N/A';
-        _refund = double.tryParse('${res['data']['refund'] ?? 0}')
-                ?.toStringAsPrecision(3) ??
-            'N/A';
-        _totalTransaction = double.tryParse(
-                    '${(res['data']['deposit'] ?? 0) + (res['data']['refund'] ?? 0)}')
-                ?.toStringAsPrecision(3) ??
-            'N/A';
+        _deposit = 'Є${res['data']['deposit'] ?? 0}';
+        _refund = 'Є${res['data']['refund'] ?? 0}';
+        _totalTransaction =
+            'Є${(res['data']['deposit'] ?? 0) + (res['data']['refund'] ?? 0)}';
         _transactions = res['data']['transactions']['data'];
       });
     }
@@ -56,6 +53,13 @@ class _WalletViewState extends State<WalletView> {
         _user = res['data'];
       });
     }
+    Fluttertoast.showToast(
+        msg: 'Scan ${res['success'] ? 'Successfull' : 'Failed'}',
+        gravity: ToastGravity.CENTER,
+        backgroundColor: const Color(0xFFF36A30),
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Navigator.pop(context);
   }
 
   handleWithdrawType(String type) {
@@ -65,6 +69,9 @@ class _WalletViewState extends State<WalletView> {
   }
 
   onCompleteTransaction() async {
+    setState(() {
+      _isCompleting = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     int? amount = int.tryParse(_amount.text);
@@ -80,6 +87,15 @@ class _WalletViewState extends State<WalletView> {
       _amount.clear();
       loadData();
     }
+    Fluttertoast.showToast(
+        msg: 'Transaction ${res['success'] ? 'Completed' : 'Failed'}',
+        gravity: ToastGravity.CENTER,
+        backgroundColor: const Color(0xFFF36A30),
+        textColor: Colors.white,
+        fontSize: 16.0);
+    setState(() {
+      _isCompleting = false;
+    });
   }
 
   @override
@@ -100,11 +116,7 @@ class _WalletViewState extends State<WalletView> {
                         // await onScan('01jma7nyz1x0wwnpcmacxnj67h');
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return ScannerView(
-                            onScan: (dynamic) async {
-                              await onScan(dynamic);
-                            },
-                          );
+                          return ScannerView(onScan: onScan);
                         }));
                       },
                       child: Container(
@@ -227,14 +239,14 @@ class _WalletViewState extends State<WalletView> {
                                           alignment: Alignment.center,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8),
-                                          color: _withdrawType == 'refund'
+                                          color: _withdrawType != 'refund'
                                               ? const Color(0xFFF2500B)
                                               : const Color(0xFF001232),
                                           child: Text(
                                             'Refund',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: _withdrawType == 'refund'
+                                              color: _withdrawType != 'refund'
                                                   ? const Color(0xFF001232)
                                                   : const Color(0xFFF2500B),
                                               fontSize: 16,
@@ -250,14 +262,14 @@ class _WalletViewState extends State<WalletView> {
                                           alignment: Alignment.center,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8),
-                                          color: _withdrawType == 'deposit'
+                                          color: _withdrawType != 'deposit'
                                               ? const Color(0xFFF2500B)
                                               : const Color(0xFF001232),
                                           child: Text(
                                             'Deposit',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: _withdrawType == 'deposit'
+                                              color: _withdrawType != 'deposit'
                                                   ? const Color(0xFF001232)
                                                   : const Color(0xFFF2500B),
                                               fontSize: 16,
@@ -271,54 +283,62 @@ class _WalletViewState extends State<WalletView> {
                             const SizedBox(
                               height: 20,
                             ),
-                            IntrinsicHeight(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                    onTap: onCompleteTransaction,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 12),
-                                      color: const Color(0xFFF2500B),
-                                      child: const Text(
-                                        'Complete Transaction',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Color(0xFF001232),
-                                          fontSize: 16,
+                            if (_isCompleting)
+                              const Align(
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFFF2500B),
+                                ),
+                              )
+                            else
+                              IntrinsicHeight(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: onCompleteTransaction,
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 12),
+                                        color: const Color(0xFFF2500B),
+                                        child: const Text(
+                                          'Complete Transaction',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Color(0xFF001232),
+                                            fontSize: 16,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _user = null;
-                                      });
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 12),
-                                      color: const Color(0xFFF2500B),
-                                      child: const Text(
-                                        'Reset',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Color(0xFF001232),
-                                          fontSize: 16,
+                                    const SizedBox(
+                                      width: 16,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _user = null;
+                                        });
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 12),
+                                        color: const Color(0xFFF2500B),
+                                        child: const Text(
+                                          'Reset',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Color(0xFF001232),
+                                            fontSize: 16,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
+                                    )
+                                  ],
+                                ),
+                              )
                           ],
                         )),
                   const SizedBox(
@@ -350,8 +370,7 @@ class _WalletViewState extends State<WalletView> {
                               const SizedBox(height: 8),
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: Text(
-                                    _deposit != null ? 'Є$_deposit' : 'N/A',
+                                child: Text(_deposit ?? 'N/A',
                                     style: const TextStyle(fontSize: 24),
                                     textAlign: TextAlign.end),
                               )
@@ -382,8 +401,7 @@ class _WalletViewState extends State<WalletView> {
                               const SizedBox(height: 8),
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: Text(
-                                    _refund != null ? 'Є$_refund' : 'N/A',
+                                child: Text(_refund ?? 'N/A',
                                     style: const TextStyle(fontSize: 24),
                                     textAlign: TextAlign.end),
                               )
@@ -417,10 +435,7 @@ class _WalletViewState extends State<WalletView> {
                         const SizedBox(height: 8),
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Text(
-                              _totalTransaction != null
-                                  ? 'Є$_totalTransaction'
-                                  : 'N/A',
+                          child: Text(_totalTransaction ?? 'N/A',
                               style: const TextStyle(fontSize: 24),
                               textAlign: TextAlign.end),
                         )
