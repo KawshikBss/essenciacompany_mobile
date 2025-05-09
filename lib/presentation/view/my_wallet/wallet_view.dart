@@ -1,5 +1,6 @@
 import 'package:essenciacompany_mobile/core/utils.dart';
 import 'package:essenciacompany_mobile/domain/wallet_requests.dart';
+import 'package:essenciacompany_mobile/presentation/component/custom_app_bar.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -103,7 +104,7 @@ class _WalletViewState extends State<WalletView> {
     return Scaffold(
         backgroundColor: const Color(0xFF001232),
         extendBodyBehindAppBar: true,
-        // appBar: CustomAppBar.showPosAppBar(context, title: 'My Wallet'),
+        appBar: CustomAppBar.showCustomAppBar(context),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
