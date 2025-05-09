@@ -22,7 +22,7 @@ class CustomAppBar {
                           builder: (context) => const MenuDialog());
                     },
                     icon: const Icon(Icons.more_vert),
-                    // color: Colors.white,
+                    color: const Color(0xFFF2500B),
                     iconSize: 30,
                   );
                 },
