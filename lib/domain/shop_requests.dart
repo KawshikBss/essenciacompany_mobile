@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-Future<Map<String, dynamic>> getProducts({String? token}) async {
+Future<Map<String, dynamic>> getProducts({String? token, String? query}) async {
   if (token == null) return {'success': false, 'message': 'Login again'};
   final response = await http.get(
-    Uri.parse('https://events.essenciacompany.com/api/app/extras/all'),
+    Uri.parse(
+        'https://events.essenciacompany.com/api/app/extras/all${query != null && query.isNotEmpty ? '?query=$query' : ''}'),
     headers: <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -61,4 +62,31 @@ Future<Map<String, dynamic>> createOrder(Map<String, dynamic> orderData,
     }
   }
   return {'success': false, 'message': 'Unexpected error'};
+}
+
+Future<Map<String, dynamic>> getTicket({String? ticket}) async {
+  Map<String, dynamic> res = {'success': false};
+  if (ticket == null) return res;
+  final response = await http.post(
+      Uri.parse('https://events.essenciacompany.com/api/app/user-from-qr'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'ticket': ticket}));
+  if (response.statusCode == 200) {
+    try {
+      final data = jsonDecode(response.body);
+      res = {'success': true, 'data': data['user']};
+    } catch (error) {
+      print(error.toString());
+    }
+  } else {
+    try {
+      final data = jsonDecode(response.body);
+      res['message'] = data['message'];
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+  return res;
 }
