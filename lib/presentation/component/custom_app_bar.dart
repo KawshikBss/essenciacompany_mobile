@@ -33,7 +33,12 @@ class CustomAppBar {
   }
 
   static showPosAppBar(BuildContext context,
-      {String? title, Function? onRefresh}) {
+      {String? title,
+      Function? onRefresh,
+      bool showSearchbar = false,
+      Function? toggleSearchbar,
+      Function? onSearch,
+      TextEditingController? searchController}) {
     return AppBar(
       automaticallyImplyLeading: false,
       forceMaterialTransparency: true,
@@ -45,13 +50,14 @@ class CustomAppBar {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                title ?? 'POS',
-                style: const TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700),
-              ),
+              if (!showSearchbar)
+                Text(
+                  title ?? 'POS',
+                  style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700),
+                ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -65,9 +71,37 @@ class CustomAppBar {
                     color: Colors.white,
                     iconSize: 30,
                   ),
+                  if (showSearchbar)
+                    Container(
+                        constraints: const BoxConstraints(maxWidth: 200),
+                        child: TextField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                              hintText: 'Search',
+                              hintStyle: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w400),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              filled: true,
+                              fillColor: Colors.white),
+                          style: const TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.w400),
+                        )),
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      if (toggleSearchbar != null) {
+                        toggleSearchbar();
+                      }
+                    },
+                    icon: searchController != null &&
+                            searchController.text.isEmpty
+                        ? const Icon(Icons.search)
+                        : const Icon(Icons.close),
                     color: Colors.white,
                     iconSize: 30,
                   ),

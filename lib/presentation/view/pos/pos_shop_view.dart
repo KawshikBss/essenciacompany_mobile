@@ -18,6 +18,14 @@ class PosShopView extends StatefulWidget {
 class _PosShopViewState extends State<PosShopView> {
   List<dynamic> _productsList = [];
   String? _pos;
+  bool _showSearchbar = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  toggleSearchBar() {
+    setState(() {
+      _showSearchbar = !_showSearchbar;
+    });
+  }
 
   CartService cartService = CartService();
 
@@ -25,6 +33,9 @@ class _PosShopViewState extends State<PosShopView> {
   void initState() {
     super.initState();
     loadData();
+    _searchController.addListener(() {
+      loadData();
+    });
   }
 
   loadData() async {
@@ -35,7 +46,7 @@ class _PosShopViewState extends State<PosShopView> {
       _pos = user['pos']['name'] ?? 'Essencia Company';
     });
     final token = _prefs.getString('token');
-    final res = await getProducts(token: token);
+    final res = await getProducts(token: token, query: _searchController.text);
     if (res['success']) {
       setState(() {
         _productsList = res['data'];
@@ -49,7 +60,11 @@ class _PosShopViewState extends State<PosShopView> {
         backgroundColor: Colors.grey[300],
         extendBodyBehindAppBar: true,
         appBar: CustomAppBar.showPosAppBar(context,
-            title: '$_pos', onRefresh: loadData),
+            title: '$_pos',
+            onRefresh: loadData,
+            showSearchbar: _showSearchbar,
+            toggleSearchbar: toggleSearchBar,
+            searchController: _searchController),
         body: SafeArea(
             child: Padding(
                 padding:
