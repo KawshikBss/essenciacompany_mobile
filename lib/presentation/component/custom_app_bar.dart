@@ -98,10 +98,7 @@ class CustomAppBar {
                         toggleSearchbar();
                       }
                     },
-                    icon: searchController != null &&
-                            searchController.text.isEmpty
-                        ? const Icon(Icons.search)
-                        : const Icon(Icons.close),
+                    icon: const Icon(Icons.search),
                     color: Colors.white,
                     iconSize: 30,
                   ),
