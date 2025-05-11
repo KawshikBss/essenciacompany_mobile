@@ -106,7 +106,7 @@ class _OrderDialogState extends State<OrderDialog> {
         Navigator.pop(context);
       });
     }));
-    final res = await getTicket(ticket: _ticket);
+    final res = await getUserFromQr(qrCode: _ticket);
     if (res['success']) {
       final userData = res['data'];
       setState(() {
