@@ -64,15 +64,15 @@ Future<Map<String, dynamic>> createOrder(Map<String, dynamic> orderData,
   return {'success': false, 'message': 'Unexpected error'};
 }
 
-Future<Map<String, dynamic>> getTicket({String? ticket}) async {
+Future<Map<String, dynamic>> getUserFromQr({String? qrCode}) async {
   Map<String, dynamic> res = {'success': false};
-  if (ticket == null) return res;
+  if (qrCode == null) return res;
   final response = await http.post(
       Uri.parse('https://events.essenciacompany.com/api/app/user-from-qr'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'ticket': ticket}));
+      body: jsonEncode({'ticket': qrCode}));
   if (response.statusCode == 200) {
     try {
       final data = jsonDecode(response.body);
