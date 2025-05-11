@@ -1,3 +1,5 @@
+import 'package:essenciacompany_mobile/presentation/view/pos/check_qr_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,7 +24,19 @@ class _PosMenuDialogState extends State<PosMenuDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ScannerView(onScan: (code) async {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CheckQrView(
+                                            qrCode: code,
+                                          )));
+                            })));
+              },
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(10),
