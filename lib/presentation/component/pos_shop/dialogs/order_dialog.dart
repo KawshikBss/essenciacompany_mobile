@@ -285,14 +285,14 @@ class _OrderDialogState extends State<OrderDialog> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GestureDetector(
+                    /* GestureDetector(
                         onTap: () {},
                         child: const Image(
                           image: NetworkImage(
                               'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Flag_of_Portugal_%28alternate%29.svg/1200px-Flag_of_Portugal_%28alternate%29.svg.png'),
                           width: 30,
                           fit: BoxFit.fitWidth,
-                        )),
+                        )), */
                     Expanded(
                         child: TextField(
                       controller: _phoneController,
