@@ -42,7 +42,7 @@ class PaymentConfirmDialog extends StatelessWidget {
           const SizedBox(height: 40),
           GestureDetector(
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/pos/shop');
               },
               child: Container(
                 padding:
