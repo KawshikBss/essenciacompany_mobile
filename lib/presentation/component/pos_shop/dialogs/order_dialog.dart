@@ -4,6 +4,7 @@ import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/p
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderDialog extends StatefulWidget {
@@ -46,6 +47,7 @@ class _OrderDialogState extends State<OrderDialog> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _vatController = TextEditingController();
+  String? _dialCode;
 
   @override
   void dispose() {
@@ -98,7 +100,9 @@ class _OrderDialogState extends State<OrderDialog> {
       'billing': {
         'name': _nameController.text,
         'email': _emailController.text,
-        'phone': _phoneController.text,
+        'phone': _phoneController.text.isNotEmpty
+            ? '$_dialCode${_phoneController.text}'
+            : '',
         'vatNumber': _vatController.text,
       },
       "payment_method": _paymentMethod,
@@ -264,13 +268,17 @@ class _OrderDialogState extends State<OrderDialog> {
                 child: TextField(
                   controller: _nameController,
                   textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Enter name',
                     hintStyle: TextStyle(
-                      color: Colors.white,
+                      color: Colors.grey[750],
                       fontSize: 20,
                     ),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
                   ),
                 ),
               ),
@@ -286,13 +294,17 @@ class _OrderDialogState extends State<OrderDialog> {
                 child: TextField(
                   controller: _emailController,
                   textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Enter email',
                     hintStyle: TextStyle(
-                      color: Colors.white,
+                      color: Colors.grey[750],
                       fontSize: 20,
                     ),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
                   ),
                 ),
               ),
@@ -300,40 +312,31 @@ class _OrderDialogState extends State<OrderDialog> {
                 height: 10,
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 6, horizontal: 30),
-                decoration: BoxDecoration(
-                  color: const Color(0xff28badf),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    /* GestureDetector(
-                        onTap: () {},
-                        child: const Image(
-                          image: NetworkImage(
-                              'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Flag_of_Portugal_%28alternate%29.svg/1200px-Flag_of_Portugal_%28alternate%29.svg.png'),
-                          width: 30,
-                          fit: BoxFit.fitWidth,
-                        )), */
-                    Expanded(
-                        child: TextField(
-                      controller: _phoneController,
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Enter phone',
-                        hintStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ))
-                  ],
-                ),
-              ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff28badf),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: InternationalPhoneNumberInput(
+                    onInputChanged: (data) {
+                      setState(() {
+                        _dialCode = data.dialCode;
+                      });
+                    },
+                    initialValue: PhoneNumber(isoCode: 'PT'),
+                    textFieldController: _phoneController,
+                    inputBorder: InputBorder.none,
+                    selectorTextStyle: const TextStyle(
+                      // color: Colors.white,
+                      fontSize: 18,
+                    ),
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                    hintText: 'Enter Phone',
+                  )),
               const SizedBox(
                 height: 10,
               ),
@@ -346,13 +349,17 @@ class _OrderDialogState extends State<OrderDialog> {
                 child: TextField(
                   controller: _vatController,
                   textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Enter VAT number',
                     hintStyle: TextStyle(
-                      color: Colors.white,
+                      color: Colors.grey[750],
                       fontSize: 20,
                     ),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
                   ),
                 ),
               ),
