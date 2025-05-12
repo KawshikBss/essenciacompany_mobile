@@ -72,7 +72,7 @@ Future<Map<String, dynamic>> getUserFromQr({String? qrCode}) async {
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'ticket': qrCode}));
+      body: jsonEncode({'code': qrCode}));
   if (response.statusCode == 200) {
     try {
       final data = jsonDecode(response.body);
