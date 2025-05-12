@@ -17,7 +17,9 @@ class PosShopView extends StatefulWidget {
 }
 
 class _PosShopViewState extends State<PosShopView> {
+  List<dynamic> _eventsList = [];
   List<dynamic> _productsList = [];
+  String? _selectedEvent;
   String? _pos;
   bool _showSearchbar = false;
   final TextEditingController _searchController = TextEditingController();
@@ -35,7 +37,7 @@ class _PosShopViewState extends State<PosShopView> {
     super.initState();
     loadData();
     _searchController.addListener(() {
-      loadData();
+      refetchExtras();
     });
   }
 
@@ -47,7 +49,34 @@ class _PosShopViewState extends State<PosShopView> {
       _pos = user['pos']['name'] ?? 'Essencia Company';
     });
     final token = _prefs.getString('token');
-    final res = await getProducts(token: token, query: _searchController.text);
+    final events = await getEvents(token: token);
+    if (events['success']) {
+      setState(() {
+        _eventsList = events['data'];
+      });
+      try {
+        setState(() {
+          _selectedEvent = '${events['data'][0]['id']}';
+        });
+      } catch (err) {
+        print(err.toString());
+      }
+    }
+    final res = await getProducts(
+        token: token, eventId: _selectedEvent, query: _searchController.text);
+    if (res['success']) {
+      setState(() {
+        _productsList = res['data'];
+      });
+    }
+  }
+
+  refetchExtras() async {
+    cartService.resetCart();
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final token = _prefs.getString('token');
+    final res = await getProducts(
+        token: token, eventId: _selectedEvent, query: _searchController.text);
     if (res['success']) {
       setState(() {
         _productsList = res['data'];
@@ -73,6 +102,40 @@ class _PosShopViewState extends State<PosShopView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 16),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black45,
+                                offset: Offset(0, 2),
+                                blurRadius: 5)
+                          ]),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          isExpanded: true,
+                          isDense: true,
+                          items: _eventsList.isNotEmpty
+                              ? _eventsList
+                                  .map((eventItem) => DropdownMenuItem(
+                                      child: Text(eventItem['name']),
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedEvent = '${eventItem['id']}';
+                                        });
+                                        refetchExtras();
+                                      }))
+                                  .toList()
+                              : [],
+                          onChanged: (_) {},
+                        ),
+                      ),
+                    ),
                     Expanded(
                         child: SingleChildScrollView(
                       child: Column(
@@ -157,6 +220,7 @@ class _PosShopViewState extends State<PosShopView> {
                                           context: context,
                                           builder: (context) => OrderDialog(
                                                 products: cartService.items,
+                                                eventId: _selectedEvent,
                                               ));
                                     },
                                     child: Container(
