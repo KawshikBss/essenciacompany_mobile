@@ -18,8 +18,10 @@ class PosShopView extends StatefulWidget {
 
 class _PosShopViewState extends State<PosShopView> {
   List<dynamic> _eventsList = [];
+  List<dynamic> _categoriesList = [];
   List<dynamic> _productsList = [];
   String? _selectedEvent;
+  String? _selectedCategory;
   String? _pos;
   bool _showSearchbar = false;
   final TextEditingController _searchController = TextEditingController();
@@ -62,6 +64,12 @@ class _PosShopViewState extends State<PosShopView> {
         print(err.toString());
       }
     }
+    final categories = await getExtrasCategories(token: token);
+    if (categories['success']) {
+      setState(() {
+        _categoriesList = categories['data'];
+      });
+    }
     final res = await getProducts(
         token: token, eventId: _selectedEvent, query: _searchController.text);
     if (res['success']) {
@@ -76,7 +84,10 @@ class _PosShopViewState extends State<PosShopView> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final token = _prefs.getString('token');
     final res = await getProducts(
-        token: token, eventId: _selectedEvent, query: _searchController.text);
+        token: token,
+        eventId: _selectedEvent,
+        categoryId: _selectedCategory,
+        query: _searchController.text);
     if (res['success']) {
       setState(() {
         _productsList = res['data'];
@@ -135,6 +146,97 @@ class _PosShopViewState extends State<PosShopView> {
                           onChanged: (_) {},
                         ),
                       ),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: _categoriesList.map((category) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (_selectedCategory ==
+                                    category['id'].toString()) {
+                                  _selectedCategory = null;
+                                } else {
+                                  _selectedCategory = '${category['id']}';
+                                }
+                              });
+                              refetchExtras();
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: _selectedCategory ==
+                                        category['id'].toString()
+                                    ? Colors.black
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: _selectedCategory ==
+                                        category['id'].toString()
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.red.withOpacity(0.5),
+                                          offset: const Offset(0, 0),
+                                          blurRadius: 4,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.orange.withOpacity(0.5),
+                                          offset: const Offset(0, 0),
+                                          blurRadius: 4,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.yellow.withOpacity(0.5),
+                                          offset: const Offset(0, 0),
+                                          blurRadius: 4,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.green.withOpacity(0.5),
+                                          offset: const Offset(0, 0),
+                                          blurRadius: 4,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.blue.withOpacity(0.5),
+                                          offset: const Offset(0, 0),
+                                          blurRadius: 4,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.indigo.withOpacity(0.5),
+                                          offset: const Offset(0, 0),
+                                          blurRadius: 4,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.purple.withOpacity(0.5),
+                                          offset: const Offset(0, 0),
+                                          blurRadius: 4,
+                                        ),
+                                      ]
+                                    : const [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          offset: Offset(0, 2),
+                                          blurRadius: 4,
+                                        ),
+                                      ],
+                              ),
+                              child: Text(
+                                category['name'],
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: _selectedCategory ==
+                                            category['id'].toString()
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
                     ),
                     Expanded(
                         child: SingleChildScrollView(
