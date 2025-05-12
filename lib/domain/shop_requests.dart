@@ -22,12 +22,34 @@ Future<Map<String, dynamic>> getEvents({String? token}) async {
   return {'success': false, 'message': 'Unexpected error'};
 }
 
+Future<Map<String, dynamic>> getExtrasCategories({String? token}) async {
+  if (token == null) return {'success': false, 'message': 'Login again'};
+  final response = await http.get(
+    Uri.parse('https://events.essenciacompany.com/api/app/extras/categories'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    },
+  );
+  print(response.body);
+  if (response.statusCode == 200) {
+    try {
+      final data = jsonDecode(response.body);
+      return {'success': true, 'data': data['data']};
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+  return {'success': false, 'message': 'Unexpected error'};
+}
+
 Future<Map<String, dynamic>> getProducts(
-    {String? token, String? eventId, String? query}) async {
+    {String? token, String? eventId, String? categoryId, String? query}) async {
   if (token == null) return {'success': false, 'message': 'Login again'};
   final response = await http.get(
     Uri.parse(
         'https://events.essenciacompany.com/api/app/extras/all?${eventId != null && eventId.isNotEmpty ? '&event_id=$eventId' : ''}'
+        '${categoryId != null && categoryId.isNotEmpty ? '&category_id=$categoryId' : ''}'
         '${query != null && query.isNotEmpty ? '&query=$query' : ''}'),
     headers: <String, String>{
       'Content-Type': 'application/json',
