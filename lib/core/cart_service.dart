@@ -3,6 +3,8 @@ class CartService {
   int totalItems = 0;
   double totalPrice = 0.00;
 
+  CartService();
+
   updateCart() {
     totalItems = items.length;
     totalPrice = 0;
@@ -54,5 +56,11 @@ class CartService {
   Map<String, dynamic> getItem(id) {
     final product = items.indexWhere((item) => item['id'] == id);
     return product >= 0 ? items[product] : {};
+  }
+
+  void resetCart() {
+    items = [];
+    totalItems = 0;
+    totalPrice = 0.00;
   }
 }
