@@ -1,4 +1,3 @@
-import 'package:essenciacompany_mobile/core/cart_service.dart';
 import 'package:essenciacompany_mobile/domain/shop_requests.dart';
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/payment_confirm_dialog.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
@@ -9,7 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderDialog extends StatefulWidget {
   final List<dynamic> products;
-  const OrderDialog({super.key, this.products = const []});
+  final String? eventId;
+  const OrderDialog({super.key, this.products = const [], this.eventId});
 
   @override
   State<OrderDialog> createState() => _OrderDialogState();
@@ -19,7 +19,6 @@ class _OrderDialogState extends State<OrderDialog> {
   bool _withdraw = false;
   String _invoice = 'Phone';
   String _paymentMethod = 'Card';
-  CartService cartService = CartService();
   String? _ticket;
   Map<String, dynamic>? _walletUser;
 
@@ -94,8 +93,14 @@ class _OrderDialogState extends State<OrderDialog> {
       return;
     }
 
+    double totalPrice = 0;
+    for (var element in widget.products) {
+      totalPrice += element['itemTotal'];
+    }
+
     Map<String, dynamic> orderData = {
       'user_id': _walletUser != null ? _walletUser!['id'] : null,
+      'event_id': widget.eventId,
       "extras": products,
       'billing': {
         'name': _nameController.text,
@@ -105,6 +110,8 @@ class _OrderDialogState extends State<OrderDialog> {
             : '',
         'vatNumber': _vatController.text,
       },
+      "total": totalPrice,
+      "sub_total": totalPrice,
       "payment_method": _paymentMethod,
       "send_message": _invoice == "Phone" ? true : false,
       "send_email": _invoice == "Email" ? true : false,
@@ -118,7 +125,6 @@ class _OrderDialogState extends State<OrderDialog> {
       _emailController.clear();
       _phoneController.clear();
       _vatController.clear();
-      cartService.resetCart();
       setState(() {});
       Navigator.of(context).pop();
       showDialog(
