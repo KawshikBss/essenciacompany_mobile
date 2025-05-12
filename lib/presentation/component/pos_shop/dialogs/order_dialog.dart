@@ -3,6 +3,7 @@ import 'package:essenciacompany_mobile/domain/shop_requests.dart';
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/payment_confirm_dialog.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderDialog extends StatefulWidget {
@@ -63,9 +64,31 @@ class _OrderDialogState extends State<OrderDialog> {
         'price': item['item']['price']
       };
     }).toList();
-    if (_nameController.text.isEmpty ||
-        _emailController.text.isEmpty ||
-        _phoneController.text.isEmpty) {
+    if (_nameController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: 'Name is required',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+    if (_invoice == 'Email' && _emailController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: 'Email is required when invoice is sent to email',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+    if (_invoice == 'Phone' && _phoneController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: 'Phone is required when invoice is sent to phone',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
       return;
     }
 
@@ -91,6 +114,8 @@ class _OrderDialogState extends State<OrderDialog> {
       _emailController.clear();
       _phoneController.clear();
       _vatController.clear();
+      cartService.resetCart();
+      setState(() {});
       Navigator.of(context).pop();
       showDialog(
           context: context, builder: (context) => const PaymentConfirmDialog());
