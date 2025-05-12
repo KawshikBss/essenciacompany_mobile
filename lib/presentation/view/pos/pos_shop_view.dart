@@ -6,6 +6,7 @@ import 'package:essenciacompany_mobile/presentation/component/custom_app_bar.dar
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/order_dialog.dart';
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/product_item.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PosShopView extends StatefulWidget {
@@ -142,6 +143,16 @@ class _PosShopViewState extends State<PosShopView> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
+                                      if (cartService.items.isEmpty) {
+                                        Fluttertoast.showToast(
+                                            msg: 'Cart is empty',
+                                            gravity: ToastGravity.TOP,
+                                            backgroundColor:
+                                                const Color(0xFFF36A30),
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+                                        return;
+                                      }
                                       showDialog(
                                           context: context,
                                           builder: (context) => OrderDialog(
