@@ -31,7 +31,6 @@ Future<Map<String, dynamic>> getExtrasCategories({String? token}) async {
       'Authorization': 'Bearer $token'
     },
   );
-  print(response.body);
   if (response.statusCode == 200) {
     try {
       final data = jsonDecode(response.body);
@@ -89,6 +88,7 @@ Future<Map<String, dynamic>> getOrders({String? token}) async {
 
 Future<Map<String, dynamic>> createOrder(Map<String, dynamic> orderData,
     {String? token}) async {
+  Map<String, dynamic> res = {'success': false};
   if (token == null) return {'success': false, 'message': 'Login again'};
   final response = await http.post(
       Uri.parse('https://events.essenciacompany.com/api/app/order/create'),
@@ -97,15 +97,17 @@ Future<Map<String, dynamic>> createOrder(Map<String, dynamic> orderData,
         'Authorization': 'Bearer $token'
       },
       body: jsonEncode(orderData));
-  if (response.statusCode == 200) {
-    try {
-      final data = jsonDecode(response.body);
-      return {'success': true, 'data': data['order']};
-    } catch (error) {
-      print(error.toString());
+  try {
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      res = {'success': true, 'data': data['order']};
+    } else {
+      res['message'] = data['message'];
     }
+  } catch (error) {
+    res = {'success': false, 'message': 'Unexpected error'};
   }
-  return {'success': false, 'message': 'Unexpected error'};
+  return res;
 }
 
 Future<Map<String, dynamic>> getUserFromQr({String? qrCode}) async {
