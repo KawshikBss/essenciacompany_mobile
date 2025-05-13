@@ -2,6 +2,7 @@ import 'package:essenciacompany_mobile/presentation/view/pos/check_qr_view.dart'
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PosMenuDialog extends StatefulWidget {
   const PosMenuDialog({super.key});
@@ -57,8 +58,12 @@ class _PosMenuDialogState extends State<PosMenuDialog> {
             height: 10,
           ),
           GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/pos/orders');
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                final token = prefs.getString('token');
+                Uri url = Uri.parse(
+                    'https://events.essenciacompany.com/app/pos/$token/reports');
+                await launchUrl(url, mode: LaunchMode.inAppWebView);
               },
               child: Container(
                 width: double.infinity,
