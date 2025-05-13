@@ -47,6 +47,7 @@ class _OrderDialogState extends State<OrderDialog> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _vatController = TextEditingController();
   String? _dialCode;
+  String? _countryCode;
 
   @override
   void dispose() {
@@ -111,7 +112,7 @@ class _OrderDialogState extends State<OrderDialog> {
         'vatNumber': _vatController.text,
       },
       "total": totalPrice,
-      "sub_total": totalPrice,
+      "subtotal": totalPrice,
       "payment_method": _paymentMethod,
       "send_message": _invoice == "Phone" ? true : false,
       "send_email": _invoice == "Email" ? true : false,
@@ -129,6 +130,13 @@ class _OrderDialogState extends State<OrderDialog> {
       Navigator.of(context).pop();
       showDialog(
           context: context, builder: (context) => const PaymentConfirmDialog());
+    } else {
+      Fluttertoast.showToast(
+          msg: res['message'] ?? 'Error creating order',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
@@ -328,9 +336,10 @@ class _OrderDialogState extends State<OrderDialog> {
                     onInputChanged: (data) {
                       setState(() {
                         _dialCode = data.dialCode;
+                        _countryCode = data.isoCode;
                       });
                     },
-                    initialValue: PhoneNumber(isoCode: 'PT'),
+                    initialValue: PhoneNumber(isoCode: _countryCode ?? 'PT'),
                     textFieldController: _phoneController,
                     inputBorder: InputBorder.none,
                     selectorTextStyle: const TextStyle(
@@ -340,6 +349,17 @@ class _OrderDialogState extends State<OrderDialog> {
                     textStyle: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
+                    ),
+                    selectorConfig: const SelectorConfig(
+                      selectorType: PhoneInputSelectorType.DIALOG,
+                    ),
+                    searchBoxDecoration: InputDecoration(
+                      hintText: 'Search',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[750],
+                        fontSize: 18,
+                      ),
+                      border: InputBorder.none,
                     ),
                     hintText: 'Enter Phone',
                   )),
