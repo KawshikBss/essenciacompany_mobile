@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:essenciacompany_mobile/domain/auth_requests.dart';
 import 'package:essenciacompany_mobile/domain/shop_requests.dart';
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/payment_confirm_dialog.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
@@ -18,9 +21,43 @@ class OrderDialog extends StatefulWidget {
 class _OrderDialogState extends State<OrderDialog> {
   bool _withdraw = false;
   String _invoice = 'Phone';
-  String _paymentMethod = 'Card';
+  String _paymentMethod = 'card';
   String? _ticket;
   Map<String, dynamic>? _walletUser;
+  List<String> _paymentMethods = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await getUser(token: token);
+    if (res['success']) {
+      try {
+        Map<String, dynamic> tmpMethods =
+            jsonDecode(res['data']['pos']['payment_methods'])
+                as Map<String, dynamic>;
+        List<String> paymentMethods =
+            tmpMethods.keys.where((item) => tmpMethods[item] == "1").toList();
+        setState(() {
+          _paymentMethods = paymentMethods;
+          _paymentMethod = paymentMethods.first;
+        });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+    final settingsRes = await getSettings(token: token);
+    if (settingsRes['success']) {
+      setState(() {
+        _withdraw = settingsRes['data']['withdraw'] == '1';
+      });
+    }
+  }
 
   _toggleWithdraw() {
     setState(() {
@@ -191,7 +228,7 @@ class _OrderDialogState extends State<OrderDialog> {
               const SizedBox(
                 height: 20,
               ),
-              if (_paymentMethod == 'Wallet' && _walletUser != null)
+              if (_paymentMethod == 'qr' && _walletUser != null)
                 GestureDetector(
                   onTap: _resetQr,
                   child: Container(
@@ -211,7 +248,7 @@ class _OrderDialogState extends State<OrderDialog> {
                         ),
                       )),
                 )
-              else if (_paymentMethod == 'Wallet')
+              else if (_paymentMethod == 'qr')
                 GestureDetector(
                   onTap: _makeQrPayment,
                   child: Container(
@@ -238,7 +275,7 @@ class _OrderDialogState extends State<OrderDialog> {
                         ],
                       )),
                 ),
-              if (_paymentMethod == 'Wallet' && _walletUser != null)
+              if (_paymentMethod == 'qr' && _walletUser != null)
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -393,136 +430,142 @@ class _OrderDialogState extends State<OrderDialog> {
                 height: 10,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Payment',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xff28badf),
-                            fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 10),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: const Color(0xff28badf),
-                                      width: 4)),
-                              child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                isDense: true,
-                                padding: EdgeInsets.zero,
-                                icon: const Icon(
-                                  Icons.arrow_downward_sharp,
-                                  size: 18,
-                                ),
-                                items: <String>['Card', 'Cash', 'Wallet']
-                                    .map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: _handlePaymentMethod,
-                                hint: const Text(
-                                  'Card',
-                                ),
-                                value: _paymentMethod,
-                              ))),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                              onTap: _toggleWithdraw,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 10),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: const Color(0xff28badf),
-                                        width: 4)),
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Withdraw',
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Icon(
-                                        _withdraw
-                                            ? Icons.check_box_outlined
-                                            : Icons.check_box_outline_blank,
-                                        size: 18,
-                                      )
-                                    ]),
-                              )),
-                        ],
-                      )
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Payment',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xff28badf),
+                              fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0xff28badf), width: 4)),
+                            child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                              isExpanded: true,
+                              isDense: true,
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                Icons.arrow_downward_sharp,
+                                size: 18,
+                              ),
+                              items: _paymentMethods.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value.toUpperCase()),
+                                );
+                              }).toList(),
+                              onChanged: _handlePaymentMethod,
+                              hint: const Text(
+                                'Cash',
+                              ),
+                              value: _paymentMethod,
+                            ))),
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     width: 10,
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Invoice',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xffec6031),
-                            fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0xffec6031), width: 4)),
-                          child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                            isDense: true,
-                            padding: EdgeInsets.zero,
-                            icon: const Icon(
-                              Icons.arrow_downward_sharp,
-                              size: 18,
-                            ),
-                            items: <String>[
-                              'Phone',
-                              'Email',
-                            ].map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: _handleInvoice,
-                            hint: const Text(
-                              'Phone',
-                            ),
-                            value: _invoice,
-                          ))),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Invoice',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xffec6031),
+                              fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0xffec6031), width: 4)),
+                            child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                              isExpanded: true,
+                              isDense: true,
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                Icons.arrow_downward_sharp,
+                                size: 18,
+                              ),
+                              items: <String>[
+                                'Phone',
+                                'Email',
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: _handleInvoice,
+                              hint: const Text(
+                                'Phone',
+                              ),
+                              value: _invoice,
+                            ))),
+                      ],
+                    ),
                   )
                 ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              GestureDetector(
+                onTap: _toggleWithdraw,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: _withdraw ? const Color(0xff28badf) : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: const Color(0xff28badf),
+                      width: 2,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Withdraw',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: _withdraw
+                              ? Colors.white
+                              : const Color(0xff28badf),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        _withdraw ? Icons.check : Icons.close,
+                        color:
+                            _withdraw ? Colors.white : const Color(0xff28badf),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 10,
