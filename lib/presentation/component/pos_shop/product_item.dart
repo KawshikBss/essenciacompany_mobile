@@ -20,7 +20,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
           color: Color(index % 2 == 0 ? 0xff28badf : 0xffec6031),
@@ -33,9 +33,9 @@ class ProductItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            name.length > 10 ? '${name.substring(0, 10)}...' : name,
+            name,
             style: const TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,7 +44,7 @@ class ProductItem extends StatelessWidget {
                 '$price€',
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700),
               ),
               const SizedBox(
@@ -57,15 +57,15 @@ class ProductItem extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  width: 30,
-                  height: 30,
+                  width: 20,
+                  height: 20,
                   decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.remove,
-                    size: 20,
+                    size: 16,
                     color: Colors.white,
                   ),
                 ),
@@ -77,7 +77,7 @@ class ProductItem extends StatelessWidget {
                 quantity.toString(),
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
@@ -91,15 +91,15 @@ class ProductItem extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  width: 30,
-                  height: 30,
+                  width: 20,
+                  height: 20,
                   decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.add,
-                    size: 20,
+                    size: 16,
                     color: Colors.white,
                   ),
                 ),
