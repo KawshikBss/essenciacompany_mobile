@@ -2,6 +2,7 @@ import 'package:essenciacompany_mobile/presentation/view/auth/login_view.dart';
 // import 'package:essenciacompany_mobile/presentation/view/checkin_checkout/checkin_checkout_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/enter_code_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/my_wallet/wallet_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/pos/check_qr_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/orders_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/pos_shop_view.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/pos/shop': (context) => const PosShopView(),
         '/pos/orders': (context) => const OrdersView(),
         '/wallet': (context) => const WalletView(),
+        '/check-qr': (context) => const CheckQrView(),
       },
     );
   }
