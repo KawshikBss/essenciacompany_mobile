@@ -166,7 +166,7 @@ class _PosShopViewState extends State<PosShopView> {
                             child: Container(
                               margin: const EdgeInsets.symmetric(horizontal: 8),
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 16),
+                                  vertical: 8, horizontal: 12),
                               decoration: BoxDecoration(
                                 color: _selectedCategory ==
                                         category['id'].toString()
