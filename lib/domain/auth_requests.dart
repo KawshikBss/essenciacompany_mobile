@@ -28,3 +28,45 @@ Future<Map<String, dynamic>> login(String email, String password) async {
     };
   }
 }
+
+Future<Map<String, dynamic>> getUser({String? token}) async {
+  if (token == null) return {'success': false, 'message': 'Login again'};
+  final response = await http.get(
+    Uri.parse('https://events.essenciacompany.com/api/app/user'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    },
+  );
+  final data = jsonDecode(response.body);
+
+  if (response.statusCode == 200) {
+    return {'success': true, 'data': data};
+  } else {
+    return {
+      'success': false,
+      'message': data['error'],
+    };
+  }
+}
+
+Future<Map<String, dynamic>> getSettings({String? token}) async {
+  if (token == null) return {'success': false, 'message': 'Login again'};
+  final response = await http.get(
+    Uri.parse('https://events.essenciacompany.com/api/app/settings'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    },
+  );
+  final data = jsonDecode(response.body);
+
+  if (response.statusCode == 200) {
+    return {'success': true, 'data': data};
+  } else {
+    return {
+      'success': false,
+      'message': data['error'],
+    };
+  }
+}
