@@ -1,5 +1,4 @@
-import 'package:essenciacompany_mobile/presentation/view/pos/check_qr_view.dart';
-import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
+import 'package:essenciacompany_mobile/domain/auth_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,17 +25,7 @@ class _PosMenuDialogState extends State<PosMenuDialog> {
         children: [
           GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ScannerView(onScan: (code) async {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CheckQrView(
-                                            qrCode: code,
-                                          )));
-                            })));
+                Navigator.pushNamed(context, '/check-qr');
               },
               child: Container(
                 width: double.infinity,
@@ -61,8 +50,9 @@ class _PosMenuDialogState extends State<PosMenuDialog> {
               onTap: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 final token = prefs.getString('token');
+                final res = await getUser(token: token);
                 Uri url = Uri.parse(
-                    'https://events.essenciacompany.com/app/pos/$token/reports');
+                    'https://events.essenciacompany.com/app/pos/${res['data']['token']}/reports');
                 await launchUrl(url, mode: LaunchMode.inAppWebView);
               },
               child: Container(
