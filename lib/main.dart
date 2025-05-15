@@ -5,6 +5,7 @@ import 'package:essenciacompany_mobile/presentation/view/my_wallet/wallet_view.d
 import 'package:essenciacompany_mobile/presentation/view/pos/check_qr_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/orders_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/pos_shop_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/staff_withdraw/staff_withdraw_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/pos/orders': (context) => const OrdersView(),
         '/wallet': (context) => const WalletView(),
         '/check-qr': (context) => const CheckQrView(),
+        '/staff-withdraw': (context) => const StaffWithdrawView(),
       },
     );
   }
