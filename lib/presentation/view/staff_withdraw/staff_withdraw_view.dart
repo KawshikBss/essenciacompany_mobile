@@ -47,13 +47,26 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
     }
   }
 
-  _handleGetUp(int id) {
+  _handleGetUp(int id, {int amount = 1}) {
     if (_extras.isEmpty) return;
     final extras = _extras;
     for (var item in extras) {
       if (item['id'] == id) {
-        final qty = int.parse('${item['qty']}');
-        item['qty'] = '${qty > 1 ? qty - 1 : qty}';
+        if (item['newQty'] == null) {
+          int used = int.parse('${item['used']}');
+          int qty = int.parse('${item['qty']}') - used;
+          int newQty = qty - used + amount;
+          if (newQty > 0 && newQty <= qty) {
+            item['newQty'] = newQty;
+          }
+        } else {
+          int used = int.parse('${item['used']}');
+          int qty = int.parse('${item['qty']}') - used;
+          int newQty = int.parse('${item['newQty']}') + amount;
+          if (newQty > 0 && newQty <= qty) {
+            item['newQty'] = newQty;
+          }
+        }
       }
     }
     setState(() {
@@ -65,7 +78,7 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
     if (_extras.isEmpty || _ticket == null || _ticket!.isEmpty) return;
     Map<String, dynamic> extras = {};
     for (var item in _extras) {
-      extras['${item['id']}'] = item['qty'];
+      extras['${item['id']}'] = item['newQty'] ?? 0;
     }
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -138,6 +151,7 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return ScannerView(onScan: _onScan);
                 }));
+                // _onScan('6824c9b566074');
               },
               child: Container(
                 padding:
@@ -175,7 +189,9 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
                 child: _ticket != null && _extras.isEmpty
                     ? Center(
                         child: Text(
-                          'No Extras Found',
+                          _ticket != null && _extras.isEmpty
+                              ? 'No accessible extras in this ticket'
+                              : 'No Extras Found',
                           style: GoogleFonts.roboto(
                             color: Colors.white,
                             fontSize: 18,
@@ -205,18 +221,40 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
                                 ),
                               ),
                               subtitle: Text(
-                                'Amount: ${item['qty']}',
+                                'Amount:  ${(int.tryParse('${item['qty']}') ?? 0)} / ${item['newQty'] != null ? (int.tryParse('${item['qty']}') ?? 0) - (int.tryParse('${item['used']}') ?? 0) - (int.tryParse('${item['newQty']}') ?? 0) : 0}',
                                 style: GoogleFonts.roboto(
                                   color: Colors.white70,
                                   fontSize: 16,
                                 ),
                               ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.remove_circle_outline),
-                                color: Colors.redAccent,
-                                onPressed: () {
-                                  _handleGetUp(item['id']);
-                                },
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon:
+                                        const Icon(Icons.remove_circle_outline),
+                                    color: Colors.redAccent,
+                                    onPressed: () {
+                                      _handleGetUp(item['id'], amount: -1);
+                                    },
+                                  ),
+                                  Text(
+                                    item['newQty'] != null
+                                        ? '${item['newQty']}'
+                                        : '${(int.tryParse('${item['qty']}') ?? 0) - (int.tryParse('${item['used']}') ?? 0)}',
+                                    style: GoogleFonts.roboto(
+                                      color: Colors.white70,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.add_circle_outline),
+                                    color: Colors.greenAccent,
+                                    onPressed: () {
+                                      _handleGetUp(item['id']);
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                           );
