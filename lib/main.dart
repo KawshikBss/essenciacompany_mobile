@@ -1,6 +1,7 @@
 import 'package:essenciacompany_mobile/presentation/view/auth/login_view.dart';
 // import 'package:essenciacompany_mobile/presentation/view/checkin_checkout/checkin_checkout_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/enter_code_view.dart';
+import 'package:essenciacompany_mobile/presentation/view/my_wallet/physical_qr_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/my_wallet/wallet_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/check_qr_view.dart';
 import 'package:essenciacompany_mobile/presentation/view/pos/orders_view.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/pos/shop': (context) => const PosShopView(),
         '/pos/orders': (context) => const OrdersView(),
         '/wallet': (context) => const WalletView(),
+        '/physical-qr': (context) => const PhysicalQrView(),
         '/check-qr': (context) => const CheckQrView(),
         '/staff-withdraw': (context) => const StaffWithdrawView(),
       },
