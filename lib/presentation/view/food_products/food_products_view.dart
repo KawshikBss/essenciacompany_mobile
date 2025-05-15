@@ -75,7 +75,7 @@ class _FoodProductsViewState extends State<FoodProductsView> {
     }
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    final res = await withdrawExtraRequest(token, _ticket, widget.zone, extras);
+    final res = await withdrawExtraRequest(token, _ticket, extras);
     if (res['success']) {
       setState(() {
         _extras = [];
