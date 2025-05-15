@@ -92,21 +92,28 @@ Future<Map<String, dynamic>> getExtrasRequest(
       body: jsonEncode(<String, String>{
         'ticket': ticket,
       }));
-
-  final data = jsonDecode(response.body);
-  if (response.statusCode == 200) {
-    final extras =
-        (data['extras'] as List).map((e) => e as Map<String, dynamic>).toList();
-    return {
-      'success': true,
-      'ticket': data['ticket'],
-      'message': data['message'] ?? 'SCAN SUCCESSFULL',
-      'extras': extras,
-    };
-  } else {
+  try {
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final extras = (data['extras'] as List)
+          .map((e) => e as Map<String, dynamic>)
+          .toList();
+      return {
+        'success': true,
+        'ticket': data['ticket'],
+        'message': data['message'] ?? 'SCAN SUCCESSFULL',
+        'extras': extras,
+      };
+    } else {
+      return {
+        'success': false,
+        'message': data['error'] ?? data['message'],
+      };
+    }
+  } catch (e) {
     return {
       'success': false,
-      'message': data['error'] ?? data['message'],
+      'message': 'An error occurred: $e',
     };
   }
 }
@@ -131,17 +138,24 @@ Future<Map<String, dynamic>> withdrawExtraRequest(
       },
       body: jsonEncode(
           <String, dynamic>{'ticket': ticket, 'withdraw': withdraw}));
-  print(response.body);
-  final data = jsonDecode(response.body);
-  if (response.statusCode == 200) {
-    return {
-      'success': true,
-      'message': data['message'],
-    };
-  } else {
+  try {
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return {
+        'success': true,
+        'message': data['message'],
+      };
+    } else {
+      final data = jsonDecode(response.body);
+      return {
+        'success': false,
+        'message': data['error'] ?? data['message'],
+      };
+    }
+  } catch (e) {
     return {
       'success': false,
-      'message': data['error'] ?? data['message'],
+      'message': 'An error occurred: $e',
     };
   }
 }
