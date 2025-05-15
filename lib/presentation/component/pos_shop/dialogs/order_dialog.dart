@@ -20,7 +20,7 @@ class OrderDialog extends StatefulWidget {
 
 class _OrderDialogState extends State<OrderDialog> {
   bool _withdraw = false;
-  String _invoice = 'Phone';
+  String _invoice = 'None';
   String _paymentMethod = 'card';
   String? _ticket;
   Map<String, dynamic>? _walletUser;
@@ -513,7 +513,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                   Icons.arrow_downward_sharp,
                                   size: 18,
                                 ),
-                                items: <String>['Phone', 'Email', 'None']
+                                items: <String>['None', 'Phone', 'Email']
                                     .map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -522,7 +522,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                 }).toList(),
                                 onChanged: _handleInvoice,
                                 hint: const Text(
-                                  'Phone',
+                                  'None',
                                 ),
                                 value: _invoice,
                               ))),
