@@ -47,6 +47,29 @@ class _PosMenuDialogState extends State<PosMenuDialog> {
             height: 10,
           ),
           GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/staff-withdraw');
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xff28badf),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'Withdraw',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900),
+                ),
+              )),
+          const SizedBox(
+            height: 10,
+          ),
+          GestureDetector(
               onTap: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 final token = prefs.getString('token');
