@@ -217,378 +217,382 @@ class _OrderDialogState extends State<OrderDialog> {
       insetPadding: const EdgeInsets.all(12),
       child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Finalize Order',
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              if (_paymentMethod == 'qr' && _walletUser != null)
-                GestureDetector(
-                  onTap: _resetQr,
-                  child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.white,
-                          border: Border.all(
-                              color: const Color(0xFFF2500B), width: 4)),
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Reset',
-                          style:
-                              TextStyle(color: Color(0xFFF2500B), fontSize: 20),
-                          textAlign: TextAlign.center,
-                        ),
-                      )),
-                )
-              else if (_paymentMethod == 'qr')
-                GestureDetector(
-                  onTap: _makeQrPayment,
-                  child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.white,
-                          border: Border.all(
-                              color: const Color(0xFFF2500B), width: 4)),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.qr_code_scanner,
-                              size: 32, color: Color(0xFFF2500B)),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            'Pay with QR Code',
+          child: SingleChildScrollView(
+            child: SafeArea(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Finalize Order',
+                  style: TextStyle(fontSize: 18),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (_paymentMethod == 'qr' && _walletUser != null)
+                  GestureDetector(
+                    onTap: _resetQr,
+                    child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white,
+                            border: Border.all(
+                                color: const Color(0xFFF2500B), width: 4)),
+                        child: const Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Reset',
                             style: TextStyle(
                                 color: Color(0xFFF2500B), fontSize: 20),
                             textAlign: TextAlign.center,
-                          )
-                        ],
-                      )),
-                ),
-              if (_paymentMethod == 'qr' && _walletUser != null)
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      if (_walletUser != null &&
-                          _walletUser!['name'] != null &&
-                          _walletUser!['name']!.isNotEmpty)
-                        Text(
-                          '${_walletUser!['name']}',
-                          style: const TextStyle(
-                              color: Color(0xFFF2500B), fontSize: 30),
-                          textAlign: TextAlign.start,
+                          ),
+                        )),
+                  )
+                else if (_paymentMethod == 'qr')
+                  GestureDetector(
+                    onTap: _makeQrPayment,
+                    child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white,
+                            border: Border.all(
+                                color: const Color(0xFFF2500B), width: 4)),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.qr_code_scanner,
+                                size: 32, color: Color(0xFFF2500B)),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              'Pay with QR Code',
+                              style: TextStyle(
+                                  color: Color(0xFFF2500B), fontSize: 20),
+                              textAlign: TextAlign.center,
+                            )
+                          ],
+                        )),
+                  ),
+                if (_paymentMethod == 'qr' && _walletUser != null)
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          height: 10,
                         ),
-                      if (_walletUser != null &&
-                          _walletUser!['email'] != null &&
-                          _walletUser!['email']!.isNotEmpty)
-                        Text(
-                          '${_walletUser!['email']}',
-                          style: const TextStyle(
-                              color: Color(0xFF676767), fontSize: 16),
-                          textAlign: TextAlign.start,
-                        ),
-                      if (_walletUser != null &&
-                          _walletUser!['balance'] != null)
-                        Text(
-                          'Є${_walletUser!['balance']}',
-                          style: const TextStyle(
-                              color: Color(0xFFF2500B), fontSize: 26),
-                          textAlign: TextAlign.start,
-                        ),
-                    ]),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xff28badf),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextField(
-                  controller: _nameController,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Enter name',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[750],
-                      fontSize: 20,
-                    ),
-                  ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xff28badf),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextField(
-                  controller: _emailController,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Enter email',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[750],
-                      fontSize: 20,
-                    ),
-                  ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                        if (_walletUser != null &&
+                            _walletUser!['name'] != null &&
+                            _walletUser!['name']!.isNotEmpty)
+                          Text(
+                            '${_walletUser!['name']}',
+                            style: const TextStyle(
+                                color: Color(0xFFF2500B), fontSize: 30),
+                            textAlign: TextAlign.start,
+                          ),
+                        if (_walletUser != null &&
+                            _walletUser!['email'] != null &&
+                            _walletUser!['email']!.isNotEmpty)
+                          Text(
+                            '${_walletUser!['email']}',
+                            style: const TextStyle(
+                                color: Color(0xFF676767), fontSize: 16),
+                            textAlign: TextAlign.start,
+                          ),
+                        if (_walletUser != null &&
+                            _walletUser!['balance'] != null)
+                          Text(
+                            'Є${_walletUser!['balance']}',
+                            style: const TextStyle(
+                                color: Color(0xFFF2500B), fontSize: 26),
+                            textAlign: TextAlign.start,
+                          ),
+                      ]),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: const Color(0xff28badf),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: InternationalPhoneNumberInput(
-                    onInputChanged: (data) {
-                      setState(() {
-                        _dialCode = data.dialCode;
-                        _countryCode = data.isoCode;
-                      });
-                    },
-                    initialValue: PhoneNumber(isoCode: _countryCode ?? 'PT'),
-                    textFieldController: _phoneController,
-                    inputBorder: InputBorder.none,
-                    selectorTextStyle: const TextStyle(
-                      // color: Colors.white,
-                      fontSize: 18,
+                  child: TextField(
+                    controller: _nameController,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter name',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[750],
+                        fontSize: 20,
+                      ),
                     ),
-                    textStyle: const TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                     ),
-                    selectorConfig: const SelectorConfig(
-                      selectorType: PhoneInputSelectorType.DIALOG,
-                    ),
-                    searchBoxDecoration: InputDecoration(
-                      hintText: 'Search',
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff28badf),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    controller: _emailController,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter email',
                       hintStyle: TextStyle(
                         color: Colors.grey[750],
-                        fontSize: 18,
+                        fontSize: 20,
                       ),
-                      border: InputBorder.none,
                     ),
-                    hintText: 'Enter Phone',
-                  )),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xff28badf),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextField(
-                  controller: _vatController,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Enter VAT number',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[750],
+                    style: const TextStyle(
+                      color: Colors.white,
                       fontSize: 20,
                     ),
                   ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff28badf),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: InternationalPhoneNumberInput(
+                      onInputChanged: (data) {
+                        setState(() {
+                          _dialCode = data.dialCode;
+                          _countryCode = data.isoCode;
+                        });
+                      },
+                      initialValue: PhoneNumber(isoCode: _countryCode ?? 'PT'),
+                      textFieldController: _phoneController,
+                      inputBorder: InputBorder.none,
+                      selectorTextStyle: const TextStyle(
+                        // color: Colors.white,
+                        fontSize: 18,
+                      ),
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                      selectorConfig: const SelectorConfig(
+                        selectorType: PhoneInputSelectorType.DIALOG,
+                      ),
+                      searchBoxDecoration: InputDecoration(
+                        hintText: 'Search',
+                        hintStyle: TextStyle(
+                          color: Colors.grey[750],
+                          fontSize: 18,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      hintText: 'Enter Phone',
+                    )),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff28badf),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    controller: _vatController,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter VAT number',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[750],
+                        fontSize: 20,
+                      ),
+                    ),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Payment',
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Color(0xff28badf),
+                                fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: const Color(0xff28badf),
+                                      width: 4)),
+                              child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                isExpanded: true,
+                                isDense: true,
+                                padding: EdgeInsets.zero,
+                                icon: const Icon(
+                                  Icons.arrow_downward_sharp,
+                                  size: 18,
+                                ),
+                                items: _paymentMethods.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value.toUpperCase()),
+                                  );
+                                }).toList(),
+                                onChanged: _handlePaymentMethod,
+                                hint: const Text(
+                                  'Cash',
+                                ),
+                                value: _paymentMethod,
+                              ))),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Invoice',
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Color(0xffec6031),
+                                fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: const Color(0xffec6031),
+                                      width: 4)),
+                              child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                isExpanded: true,
+                                isDense: true,
+                                padding: EdgeInsets.zero,
+                                icon: const Icon(
+                                  Icons.arrow_downward_sharp,
+                                  size: 18,
+                                ),
+                                items: <String>['Phone', 'Email', 'None']
+                                    .map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: _handleInvoice,
+                                hint: const Text(
+                                  'Phone',
+                                ),
+                                value: _invoice,
+                              ))),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: _toggleWithdraw,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: _withdraw ? const Color(0xff28badf) : Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color(0xff28badf),
+                        width: 2,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Payment',
+                        Text(
+                          'Withdraw',
                           style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xff28badf),
-                              fontWeight: FontWeight.w700),
+                            fontSize: 18,
+                            color: _withdraw
+                                ? Colors.white
+                                : const Color(0xff28badf),
+                          ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 10),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: const Color(0xff28badf), width: 4)),
-                            child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                              isExpanded: true,
-                              isDense: true,
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(
-                                Icons.arrow_downward_sharp,
-                                size: 18,
-                              ),
-                              items: _paymentMethods.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value.toUpperCase()),
-                                );
-                              }).toList(),
-                              onChanged: _handlePaymentMethod,
-                              hint: const Text(
-                                'Cash',
-                              ),
-                              value: _paymentMethod,
-                            ))),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Invoice',
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xffec6031),
-                              fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 10),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: const Color(0xffec6031), width: 4)),
-                            child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                              isExpanded: true,
-                              isDense: true,
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(
-                                Icons.arrow_downward_sharp,
-                                size: 18,
-                              ),
-                              items: <String>[
-                                'Phone',
-                                'Email',
-                              ].map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                              onChanged: _handleInvoice,
-                              hint: const Text(
-                                'Phone',
-                              ),
-                              value: _invoice,
-                            ))),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              GestureDetector(
-                onTap: _toggleWithdraw,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: _withdraw ? const Color(0xff28badf) : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: const Color(0xff28badf),
-                      width: 2,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Withdraw',
-                        style: TextStyle(
-                          fontSize: 18,
+                        const SizedBox(width: 8),
+                        Icon(
+                          _withdraw ? Icons.check : Icons.close,
                           color: _withdraw
                               ? Colors.white
                               : const Color(0xff28badf),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        _withdraw ? Icons.check : Icons.close,
-                        color:
-                            _withdraw ? Colors.white : const Color(0xff28badf),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              GestureDetector(
-                onTap: submitOrder,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xff28badf),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Text(
-                    'Finish',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900),
-                  ),
+                const SizedBox(
+                  height: 10,
                 ),
-              )
-            ],
+                GestureDetector(
+                  onTap: submitOrder,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff28badf),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'Finish',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                )
+              ],
+            )),
           )),
     );
   }
