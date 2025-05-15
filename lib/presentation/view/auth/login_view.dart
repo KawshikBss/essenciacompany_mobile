@@ -19,6 +19,7 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   SharedPreferences? prefs;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -27,6 +28,10 @@ class _LoginViewState extends State<LoginView> {
   }
 
   _onLogin() async {
+    if (_isSubmitting) return;
+    setState(() {
+      _isSubmitting = true;
+    });
     if (_emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         prefs == null) {
@@ -73,6 +78,9 @@ class _LoginViewState extends State<LoginView> {
         backgroundColor: const Color(0xF2760000),
       ));
     }
+    setState(() {
+      _isSubmitting = false;
+    });
   }
 
   loadData() async {
@@ -128,26 +136,32 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(
                       height: 50,
                     ),
-                    GestureDetector(
-                      onTap: _onLogin,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF36A30),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'LOGIN',
-                            style: GoogleFonts.roboto(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.w400,
+                    _isSubmitting
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFFF36A30),
                             ),
-                          ),
-                        ),
-                      ),
-                    )
+                          )
+                        : GestureDetector(
+                            onTap: _onLogin,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF36A30),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'LOGIN',
+                                  style: GoogleFonts.roboto(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                   ],
                 )
               ],
