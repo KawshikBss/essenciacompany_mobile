@@ -70,3 +70,39 @@ Future<Map<String, dynamic>> getSettings({String? token}) async {
     };
   }
 }
+
+Future<Map<String, dynamic>> createQrUser(String code, String name,
+    {String? token}) async {
+  if (token == null) return {'success': false, 'message': 'Login again'};
+  final response = await http.post(
+    Uri.parse('https://events.essenciacompany.com/api/app/qr-user/create'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    },
+    body: jsonEncode(<String, String>{
+      'code': code,
+      'name': name,
+    }),
+  );
+  try {
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'user': data['user'],
+      };
+    } else {
+      return {
+        'success': false,
+        'message': data['error'],
+      };
+    }
+  } catch (e) {
+    return {
+      'success': false,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
