@@ -111,14 +111,12 @@ Future<Map<String, dynamic>> getExtrasRequest(
   }
 }
 
-Future<Map<String, dynamic>> withdrawExtraRequest(String? token, String? ticket,
-    String? zone, Map<String, dynamic>? withdraw) async {
+Future<Map<String, dynamic>> withdrawExtraRequest(
+    String? token, String? ticket, Map<String, dynamic>? withdraw) async {
   if (token == null ||
       token.isEmpty ||
       ticket == null ||
       ticket.isEmpty ||
-      zone == null ||
-      zone.isEmpty ||
       withdraw == null) {
     return {
       'success': false,
@@ -131,11 +129,9 @@ Future<Map<String, dynamic>> withdrawExtraRequest(String? token, String? ticket,
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(<String, dynamic>{
-        'ticket': ticket,
-        'zone': zone,
-        'withdraw': withdraw
-      }));
+      body: jsonEncode(
+          <String, dynamic>{'ticket': ticket, 'withdraw': withdraw}));
+  print(response.body);
   final data = jsonDecode(response.body);
   if (response.statusCode == 200) {
     return {
