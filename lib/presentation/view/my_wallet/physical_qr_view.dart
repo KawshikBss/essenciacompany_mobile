@@ -95,7 +95,8 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
               child: Column(
                 children: [
                   if (!_showUserCreateForm)
-                    GestureDetector(
+                    Center(
+                        child: GestureDetector(
                       onTap: () async {
                         /* await onScan(
                             '01jma7nyz1x0wwnpcmacxnj67hasddasobaosfbqond'); */
@@ -122,7 +123,7 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
                                 Icons.qr_code_scanner,
                                 size: 140,
                               ))),
-                    )
+                    ))
                   else if (_showUserCreateForm)
                     Container(
                         width: double.infinity,
