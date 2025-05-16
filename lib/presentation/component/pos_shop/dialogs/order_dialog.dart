@@ -136,6 +136,19 @@ class _OrderDialogState extends State<OrderDialog> {
       totalPrice += element['itemTotal'];
     }
 
+    if (_walletUser != null) {
+      int userBalance = int.tryParse('${_walletUser!['balance']}') ?? 0;
+      if (userBalance < totalPrice) {
+        Fluttertoast.showToast(
+            msg: 'Insufficient balance',
+            gravity: ToastGravity.CENTER,
+            backgroundColor: const Color(0xFFF36A30),
+            textColor: Colors.white,
+            fontSize: 16.0);
+        return;
+      }
+    }
+
     Map<String, dynamic> orderData = {
       'user_id': _walletUser != null ? _walletUser!['id'] : null,
       'event_id': widget.eventId,
@@ -293,7 +306,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                 color: Color(0xFFF2500B), fontSize: 30),
                             textAlign: TextAlign.start,
                           ),
-                        if (_walletUser != null &&
+                        /* if (_walletUser != null &&
                             _walletUser!['email'] != null &&
                             _walletUser!['email']!.isNotEmpty)
                           Text(
@@ -301,7 +314,7 @@ class _OrderDialogState extends State<OrderDialog> {
                             style: const TextStyle(
                                 color: Color(0xFF676767), fontSize: 16),
                             textAlign: TextAlign.start,
-                          ),
+                          ), */
                         if (_walletUser != null &&
                             _walletUser!['balance'] != null)
                           Text(
