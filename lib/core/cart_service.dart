@@ -44,7 +44,7 @@ class CartService {
       items.removeAt(exists);
     } else {
       int newQty = items[exists]['quantity'] + qty;
-      double price = items[exists]['price'];
+      double price = double.tryParse('${items[exists]['price']}') ?? 0.0;
       double newPrice = newQty * price;
       items[exists]['quantity'] = newQty;
       items[exists]['itemTotal'] = newPrice;
