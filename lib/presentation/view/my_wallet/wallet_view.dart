@@ -163,13 +163,13 @@ class _WalletViewState extends State<WalletView> {
                                     color: Color(0xFFF2500B), fontSize: 30),
                                 textAlign: TextAlign.center,
                               ),
-                            if (_user!['email']!.isNotEmpty)
+                            /* if (_user!['email']!.isNotEmpty)
                               Text(
                                 '${_user!['email']}',
                                 style: const TextStyle(
                                     color: Color(0xFF676767), fontSize: 16),
                                 textAlign: TextAlign.center,
-                              ),
+                              ), */
                             if (_user!['balance'] != null)
                               Text(
                                 'Є${_user!['balance']}',
