@@ -22,52 +22,6 @@ class _MenuDialogState extends State<MenuDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/wallet');
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xff28badf),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  'Wallet',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900),
-                ),
-              )),
-          const SizedBox(
-            height: 10,
-          ),
-          GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/physical-qr');
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xff28badf),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  'Physical QR',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900),
-                ),
-              )),
-          const SizedBox(
-            height: 10,
-          ),
-          GestureDetector(
               onTap: () async {
                 SharedPreferences _prefs =
                     await SharedPreferences.getInstance();
