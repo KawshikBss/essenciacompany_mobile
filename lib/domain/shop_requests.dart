@@ -129,7 +129,7 @@ Future<Map<String, dynamic>> getUserFromQr({String? qrCode}) async {
   } else {
     try {
       final data = jsonDecode(response.body);
-      res['message'] = data['message'];
+      res['message'] = data['error'] ?? data['message'];
     } catch (error) {
       print(error.toString());
     }
