@@ -1,4 +1,5 @@
 // import 'package:essenciacompany_mobile/core/utils.dart';
+import 'package:essenciacompany_mobile/core/utils.dart';
 import 'package:essenciacompany_mobile/domain/wallet_requests.dart';
 import 'package:essenciacompany_mobile/presentation/component/custom_app_bar.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
@@ -18,7 +19,7 @@ class _WalletViewState extends State<WalletView> {
   String? _refund;
   // String? _totalTransaction;
   Map<String, dynamic>? _user;
-  // List<dynamic> _transactions = [];
+  List<dynamic> _transactions = [];
   final TextEditingController _amount = TextEditingController();
   String _withdrawType = 'deposit';
 
@@ -46,12 +47,14 @@ class _WalletViewState extends State<WalletView> {
   }
 
   onScan(code) async {
+    Navigator.pop(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     var res = await getWalletUser(token: token, code: code);
     if (res['success']) {
       setState(() {
-        _user = res['data'];
+        _user = res['data']['customer'];
+        _transactions = res['data']['transactions'];
       });
     }
     Fluttertoast.showToast(
@@ -60,7 +63,6 @@ class _WalletViewState extends State<WalletView> {
         backgroundColor: const Color(0xFFF36A30),
         textColor: Colors.white,
         fontSize: 16.0);
-    Navigator.pop(context);
   }
 
   handleWithdrawType(String type) {
@@ -114,8 +116,7 @@ class _WalletViewState extends State<WalletView> {
                   if (_user == null)
                     GestureDetector(
                       onTap: () {
-                        /* onScan(
-                            '01jma7nyz1x0wwnpcmacxnj67hasddasobaosfbqond'); */
+                        // onScan('asffasla');
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
                           return ScannerView(onScan: onScan);
@@ -346,76 +347,74 @@ class _WalletViewState extends State<WalletView> {
                   const SizedBox(
                     height: 24,
                   ),
-                  Table(
-                    children: [
-                      TableRow(children: [
-                        TableCell(
-                            child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFFF2500B),
-                                  offset: Offset(5, 5),
+                  if (_user == null)
+                    Table(
+                      children: [
+                        TableRow(children: [
+                          TableCell(
+                              child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFFF2500B),
+                                    offset: Offset(5, 5),
+                                  )
+                                ]),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Today\nDeposit',
+                                  style: TextStyle(
+                                      color: Color(0xFFBD3D06), fontSize: 16),
+                                  textAlign: TextAlign.start,
+                                ),
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(_deposit ?? 'N/A',
+                                      style: const TextStyle(fontSize: 24),
+                                      textAlign: TextAlign.end),
                                 )
-                              ]),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Today\nDeposit',
-                                style: TextStyle(
-                                    color: Color(0xFFBD3D06), fontSize: 16),
-                                textAlign: TextAlign.start,
-                              ),
-                              const SizedBox(height: 8),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(_deposit ?? 'N/A',
-                                    style: const TextStyle(fontSize: 24),
-                                    textAlign: TextAlign.end),
-                              )
-                            ],
-                          ),
-                        )),
-                        TableCell(
-                            child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          padding: const EdgeInsets.all(16),
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFFF2500B),
-                                  offset: Offset(5, 5),
+                              ],
+                            ),
+                          )),
+                          TableCell(
+                              child: Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFFF2500B),
+                                    offset: Offset(5, 5),
+                                  )
+                                ]),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Today\nRefund',
+                                  style: TextStyle(
+                                      color: Color(0xFFBD3D06), fontSize: 16),
+                                  textAlign: TextAlign.start,
+                                ),
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(_refund ?? 'N/A',
+                                      style: const TextStyle(fontSize: 24),
+                                      textAlign: TextAlign.end),
                                 )
-                              ]),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Today\nRefund',
-                                style: TextStyle(
-                                    color: Color(0xFFBD3D06), fontSize: 16),
-                                textAlign: TextAlign.start,
-                              ),
-                              const SizedBox(height: 8),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(_refund ?? 'N/A',
-                                    style: const TextStyle(fontSize: 24),
-                                    textAlign: TextAlign.end),
-                              )
-                            ],
-                          ),
-                        )),
-                      ])
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
+                              ],
+                            ),
+                          )),
+                        ])
+                      ],
+                    ),
                   /* Container(
                     padding: const EdgeInsets.all(16),
                     decoration:
@@ -446,48 +445,62 @@ class _WalletViewState extends State<WalletView> {
                   ),
                   const SizedBox(
                     height: 24,
-                  ),
-                  Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration:
-                          const BoxDecoration(color: Colors.white, boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFFF2500B),
-                          offset: Offset(5, 5),
-                        )
-                      ]),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Transactions',
-                              style: TextStyle(
-                                  color: Color(0xFFBD3D06), fontSize: 30),
-                              textAlign: TextAlign.start,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Table(
-                              children: _transactions.map((transaction) {
-                                return TableRow(children: [
-                                  Text(
-                                      transaction['amount'] != null
-                                          ? 'Є${transaction['amount']}'
-                                          : 'N/A',
-                                      style: const TextStyle(fontSize: 15)),
-                                  Text(transaction['description'] ?? 'N/A',
-                                      style: const TextStyle(fontSize: 15)),
-                                  Text(
-                                      transaction['created_at'] != null
-                                          ? formatDateTime(
-                                              transaction['created_at'])
-                                          : 'N/A',
-                                      style: const TextStyle(fontSize: 15))
-                                ]);
-                              }).toList(),
-                            )
-                          ])) */
+                  ), */
+                  if (_user != null)
+                    Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFFF2500B),
+                                offset: Offset(5, 5),
+                              )
+                            ]),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Transactions',
+                                style: TextStyle(
+                                    color: Color(0xFFBD3D06), fontSize: 30),
+                                textAlign: TextAlign.start,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              _transactions.isEmpty
+                                  ? const Text(
+                                      'No transactions yet',
+                                      style: TextStyle(fontSize: 15),
+                                      textAlign: TextAlign.center,
+                                    )
+                                  : Table(
+                                      children:
+                                          _transactions.map((transaction) {
+                                        return TableRow(children: [
+                                          Text(
+                                              transaction['amount'] != null
+                                                  ? 'Є${transaction['amount']}'
+                                                  : 'N/A',
+                                              style: const TextStyle(
+                                                  fontSize: 15)),
+                                          Text(
+                                              transaction['description'] ??
+                                                  'N/A',
+                                              style: const TextStyle(
+                                                  fontSize: 15)),
+                                          Text(
+                                              transaction['created_at'] != null
+                                                  ? formatDateTime(
+                                                      transaction['created_at'])
+                                                  : 'N/A',
+                                              style:
+                                                  const TextStyle(fontSize: 15))
+                                        ]);
+                                      }).toList(),
+                                    )
+                            ]))
                 ],
               ),
             ),

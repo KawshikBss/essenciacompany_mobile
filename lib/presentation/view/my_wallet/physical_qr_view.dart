@@ -1,9 +1,12 @@
 import 'package:essenciacompany_mobile/domain/auth_requests.dart';
+import 'package:essenciacompany_mobile/domain/shop_requests.dart';
 import 'package:essenciacompany_mobile/presentation/component/custom_app_bar.dart';
 import 'package:essenciacompany_mobile/presentation/component/text_input.dart';
 import 'package:essenciacompany_mobile/presentation/view/scanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PhysicalQrView extends StatefulWidget {
@@ -17,7 +20,12 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
   bool _showUserCreateForm = false;
   String? qrCode;
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _vatController = TextEditingController();
   bool _isSubmitting = false;
+  String? _dialCode;
+  String? _countryCode;
 
   @override
   void initState() {
@@ -25,6 +33,18 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
   }
 
   onScan(code) async {
+    Navigator.pop(context);
+    print('code- $code');
+    final res = await getUserFromQr(qrCode: code);
+    if (res['success'] && res['data'] != null) {
+      Fluttertoast.showToast(
+          msg: 'QR code already used',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
     setState(() {
       _showUserCreateForm = true;
       qrCode = code;
@@ -35,7 +55,6 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
         backgroundColor: const Color(0xFFF36A30),
         textColor: Colors.white,
         fontSize: 16.0);
-    Navigator.pop(context);
   }
 
   submitUserCreate() async {
@@ -62,8 +81,16 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    final res =
-        await createQrUser(qrCode ?? '', _nameController.text, token: token);
+    Map<String, String?> data = {
+      'name': _nameController.text,
+      'email': _emailController.text.isNotEmpty ? _emailController.text : null,
+      'phone': _phoneController.text.isNotEmpty
+          ? '$_dialCode${_phoneController.text}'
+          : null,
+      'vat': _vatController.text.isNotEmpty ? _vatController.text : null,
+      'code': qrCode
+    };
+    final res = await createQrUser(data, token: token);
     if (res['success']) {
       setState(() {
         _showUserCreateForm = false;
@@ -98,8 +125,7 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
                     Center(
                         child: GestureDetector(
                       onTap: () async {
-                        /* await onScan(
-                            '01jma7nyz1x0wwnpcmacxnj67hasddasobaosfbqond'); */
+                        // await onScan('asffasla');
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
                           return ScannerView(onScan: onScan);
@@ -143,6 +169,62 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
                               TextInput(
                                 controller: _nameController,
                                 hintText: 'Enter users name',
+                              ),
+                              const SizedBox(height: 10),
+                              TextInput(
+                                controller: _emailController,
+                                hintText: 'Enter users email',
+                              ),
+                              const SizedBox(height: 10),
+                              Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                        color: const Color(0xFFF36A30)),
+                                  ),
+                                  child: InternationalPhoneNumberInput(
+                                    onInputChanged: (data) {
+                                      setState(() {
+                                        _dialCode = data.dialCode;
+                                        _countryCode = data.isoCode;
+                                      });
+                                    },
+                                    initialValue: PhoneNumber(
+                                        isoCode: _countryCode ?? 'PT'),
+                                    textFieldController: _phoneController,
+                                    inputBorder: InputBorder.none,
+                                    selectorTextStyle: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                    textStyle: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                    selectorConfig: const SelectorConfig(
+                                      selectorType:
+                                          PhoneInputSelectorType.DIALOG,
+                                    ),
+                                    searchBoxDecoration: InputDecoration(
+                                      hintText: 'Search',
+                                      hintStyle: GoogleFonts.roboto(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                      border: InputBorder.none,
+                                    ),
+                                    hintText: 'Enter Phone',
+                                  )),
+                              const SizedBox(height: 10),
+                              TextInput(
+                                controller: _vatController,
+                                hintText: 'Enter users vat number',
                               ),
                               const SizedBox(
                                 height: 20,
