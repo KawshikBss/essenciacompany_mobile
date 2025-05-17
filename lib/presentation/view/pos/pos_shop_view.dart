@@ -100,9 +100,10 @@ class _PosShopViewState extends State<PosShopView> {
     return Scaffold(
         backgroundColor: Colors.grey[300],
         extendBodyBehindAppBar: true,
-        appBar: CustomAppBar.showPosAppBar(context,
-            title: '$_pos',
-            onRefresh: loadData,
+        appBar: CustomAppBar.showPosAppBar(context, title: '$_pos',
+            onRefresh: () {
+          Navigator.pushReplacementNamed(context, '/pos/shop');
+        },
             showSearchbar: _showSearchbar,
             toggleSearchbar: toggleSearchBar,
             searchController: _searchController),
