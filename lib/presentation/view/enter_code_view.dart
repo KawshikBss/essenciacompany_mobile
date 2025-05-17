@@ -36,9 +36,11 @@ class _EnterCodeViewState extends State<EnterCodeView> {
         return res['type'] == 'food'
             ? FoodProductsView(
                 zone: codeController?.text,
+                zoneName: res['data']['name'],
               )
             : CheckinCheckoutView(
                 zone: codeController?.text,
+                zoneName: res['data']['name'],
               );
       }));
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
