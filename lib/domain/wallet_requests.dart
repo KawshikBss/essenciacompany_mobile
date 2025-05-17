@@ -40,7 +40,7 @@ Future<Map<String, dynamic>> getWalletUser(
   if (response.statusCode == 200) {
     try {
       final data = jsonDecode(response.body);
-      return {'success': true, 'data': data['customer']};
+      return {'success': true, 'data': data};
     } catch (error) {
       print(error.toString());
     }
