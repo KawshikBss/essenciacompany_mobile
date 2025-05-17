@@ -54,16 +54,16 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
       if (item['id'] == id) {
         if (item['newQty'] == null) {
           int used = int.parse('${item['used']}');
-          int qty = int.parse('${item['qty']}') - used;
-          int newQty = qty - used + amount;
-          if (newQty > 0 && newQty <= qty) {
+          int remain = int.parse('${item['qty']}') - used;
+          int newQty = amount;
+          if (newQty >= 0 && newQty <= remain) {
             item['newQty'] = newQty;
           }
         } else {
           int used = int.parse('${item['used']}');
-          int qty = int.parse('${item['qty']}') - used;
+          int remain = int.parse('${item['qty']}') - used;
           int newQty = int.parse('${item['newQty']}') + amount;
-          if (newQty > 0 && newQty <= qty) {
+          if (newQty >= 0 && newQty <= remain) {
             item['newQty'] = newQty;
           }
         }
@@ -76,15 +76,27 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
 
   _submitGetUp() async {
     if (_extras.isEmpty || _ticket == null || _ticket!.isEmpty) return;
+    int extrasSelected = 0;
     Map<String, dynamic> extras = {};
     for (var item in _extras) {
       extras['${item['id']}'] = item['newQty'] ?? 0;
+      extrasSelected += int.parse('${item['newQty'] ?? 0}');
+    }
+    if (extrasSelected == 0) {
+      Fluttertoast.showToast(
+          msg: 'No extras selected',
+          gravity: ToastGravity.CENTER,
+          backgroundColor: const Color(0xFFF36A30),
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
     }
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final res = await withdrawExtraRequest(token, _ticket, extras);
     if (res['success'] == true) {
       setState(() {
+        _ticket = null;
         _extras = [];
       });
       Fluttertoast.showToast(
@@ -221,7 +233,8 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
                                 ),
                               ),
                               subtitle: Text(
-                                'Amount:  ${(int.tryParse('${item['qty']}') ?? 0)} / ${item['newQty'] != null ? (int.tryParse('${item['qty']}') ?? 0) - (int.tryParse('${item['used']}') ?? 0) - (int.tryParse('${item['newQty']}') ?? 0) : 0}',
+                                // 'Amount:  ${(int.tryParse('${item['qty']}') ?? 0)} / ${item['newQty'] != null ? (int.tryParse('${item['qty']}') ?? 0) - (int.tryParse('${item['used']}') ?? 0) - (int.tryParse('${item['newQty']}') ?? 0) : 0}',
+                                'Amount:  ${(int.tryParse('${item['qty']}') ?? 0) - (int.tryParse('${item['used']}') ?? 0)}',
                                 style: GoogleFonts.roboto(
                                   color: Colors.white70,
                                   fontSize: 16,
@@ -241,7 +254,7 @@ class _StaffWithdrawViewState extends State<StaffWithdrawView> {
                                   Text(
                                     item['newQty'] != null
                                         ? '${item['newQty']}'
-                                        : '${(int.tryParse('${item['qty']}') ?? 0) - (int.tryParse('${item['used']}') ?? 0)}',
+                                        : '0',
                                     style: GoogleFonts.roboto(
                                       color: Colors.white70,
                                       fontSize: 16,
