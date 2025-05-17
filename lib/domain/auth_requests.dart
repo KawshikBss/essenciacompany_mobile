@@ -13,18 +13,26 @@ Future<Map<String, dynamic>> login(String email, String password) async {
       'password': password,
     }),
   );
-  final data = jsonDecode(response.body);
+  try {
+    final data = jsonDecode(response.body);
 
-  if (response.statusCode == 200) {
-    return {
-      'success': true,
-      'token': data['token'],
-      'user': data['user'],
-    };
-  } else {
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'token': data['token'],
+        'user': data['user'],
+      };
+    } else {
+      return {
+        'success': false,
+        'message': data['error'],
+      };
+    }
+  } catch (e) {
+    print(e);
     return {
       'success': false,
-      'message': data['error'],
+      'message': 'An error occurred: $e',
     };
   }
 }
@@ -71,7 +79,7 @@ Future<Map<String, dynamic>> getSettings({String? token}) async {
   }
 }
 
-Future<Map<String, dynamic>> createQrUser(String code, String name,
+Future<Map<String, dynamic>> createQrUser(Map<String, String?> data,
     {String? token}) async {
   if (token == null) return {'success': false, 'message': 'Login again'};
   final response = await http.post(
@@ -80,10 +88,7 @@ Future<Map<String, dynamic>> createQrUser(String code, String name,
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     },
-    body: jsonEncode(<String, String>{
-      'code': code,
-      'name': name,
-    }),
+    body: jsonEncode(data),
   );
   try {
     final data = jsonDecode(response.body);
