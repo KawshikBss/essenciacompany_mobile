@@ -106,7 +106,7 @@ class _WalletViewState extends State<WalletView> {
     return Scaffold(
         backgroundColor: const Color(0xFF001232),
         extendBodyBehindAppBar: true,
-        appBar: CustomAppBar.showCustomAppBar(context),
+        appBar: CustomAppBar.showStaffAppBar(context),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(

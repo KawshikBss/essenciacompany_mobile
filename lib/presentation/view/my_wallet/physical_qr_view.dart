@@ -114,7 +114,7 @@ class _PhysicalQrViewState extends State<PhysicalQrView> {
     return Scaffold(
         backgroundColor: const Color(0xFF001232),
         extendBodyBehindAppBar: true,
-        appBar: CustomAppBar.showCustomAppBar(context),
+        appBar: CustomAppBar.showStaffAppBar(context),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
