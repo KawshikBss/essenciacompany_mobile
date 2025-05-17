@@ -22,8 +22,8 @@ class _OrderDialogState extends State<OrderDialog> {
   bool _withdraw = false;
   String _invoice = 'None';
   String _paymentMethod = 'card';
-  String? _ticket;
   Map<String, dynamic>? _walletUser;
+  bool _isLoadingWalletUser = false;
   List<String> _paymentMethods = [];
 
   @override
@@ -105,7 +105,7 @@ class _OrderDialogState extends State<OrderDialog> {
     }).toList();
     if (_nameController.text.isEmpty) {
       Fluttertoast.showToast(
-          msg: 'Name is required',
+          msg: 'Name is required .',
           gravity: ToastGravity.CENTER,
           backgroundColor: const Color(0xFFF36A30),
           textColor: Colors.white,
@@ -155,11 +155,13 @@ class _OrderDialogState extends State<OrderDialog> {
       "extras": products,
       'billing': {
         'name': _nameController.text,
-        'email': _emailController.text,
+        'email':
+            _emailController.text.isNotEmpty ? _emailController.text : null,
         'phone': _phoneController.text.isNotEmpty
             ? '$_dialCode${_phoneController.text}'
-            : '',
-        'vatNumber': _vatController.text,
+            : null,
+        'vatNumber':
+            _vatController.text.isNotEmpty ? _vatController.text : null,
       },
       "total": totalPrice,
       "subtotal": totalPrice,
@@ -190,16 +192,12 @@ class _OrderDialogState extends State<OrderDialog> {
     }
   }
 
-  _makeQrPayment() async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ScannerView(onScan: (data) {
-        setState(() {
-          _ticket = data;
-        });
-        Navigator.pop(context);
-      });
-    }));
-    final res = await getUserFromQr(qrCode: _ticket);
+  _makeQrPayment(code) async {
+    Navigator.pop(context);
+    setState(() {
+      _isLoadingWalletUser = true;
+    });
+    final res = await getUserFromQr(qrCode: code);
     if (res['success']) {
       final userData = res['data'];
       setState(() {
@@ -211,17 +209,27 @@ class _OrderDialogState extends State<OrderDialog> {
         _vatController.text = userData['vatNumber'] ?? _vatController.text;
       });
     }
+    setState(() {
+      _isLoadingWalletUser = false;
+    });
   }
 
   _resetQr() {
     setState(() {
-      _ticket = null;
       _walletUser = null;
       _nameController.text = '';
       _emailController.text = '';
       _phoneController.text = '';
       _vatController.text = '';
     });
+  }
+
+  getOrderTotal() {
+    double totalPrice = 0;
+    for (var element in widget.products) {
+      totalPrice += element['itemTotal'];
+    }
+    return totalPrice;
   }
 
   @override
@@ -243,7 +251,9 @@ class _OrderDialogState extends State<OrderDialog> {
                 const SizedBox(
                   height: 20,
                 ),
-                if (_paymentMethod == 'qr' && _walletUser != null)
+                if (_paymentMethod == 'qr' &&
+                    _walletUser != null &&
+                    !_isLoadingWalletUser)
                   GestureDetector(
                     onTap: _resetQr,
                     child: Container(
@@ -263,9 +273,14 @@ class _OrderDialogState extends State<OrderDialog> {
                           ),
                         )),
                   )
-                else if (_paymentMethod == 'qr')
+                else if (_paymentMethod == 'qr' && !_isLoadingWalletUser)
                   GestureDetector(
-                    onTap: _makeQrPayment,
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ScannerView(onScan: _makeQrPayment);
+                      }));
+                    },
                     child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -290,7 +305,9 @@ class _OrderDialogState extends State<OrderDialog> {
                           ],
                         )),
                   ),
-                if (_paymentMethod == 'qr' && _walletUser != null)
+                if (_paymentMethod == 'qr' &&
+                    _walletUser != null &&
+                    !_isLoadingWalletUser)
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -323,7 +340,13 @@ class _OrderDialogState extends State<OrderDialog> {
                                 color: Color(0xFFF2500B), fontSize: 26),
                             textAlign: TextAlign.start,
                           ),
-                      ]),
+                      ])
+                else if (_isLoadingWalletUser)
+                  const Text(
+                    'Loading...',
+                    style: TextStyle(color: Color(0xFFF2500B), fontSize: 26),
+                    textAlign: TextAlign.start,
+                  ),
                 const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.all(6),
@@ -582,6 +605,15 @@ class _OrderDialogState extends State<OrderDialog> {
                       ],
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Order Total: Є${getOrderTotal()}',
+                  style:
+                      const TextStyle(color: Color(0xFFF2500B), fontSize: 18),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(
                   height: 10,
