@@ -1,5 +1,6 @@
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/menu_dialog.dart';
 import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/pos_menu_dialog.dart';
+import 'package:essenciacompany_mobile/presentation/component/pos_shop/dialogs/staff_menu_dialog.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar {
@@ -20,6 +21,35 @@ class CustomAppBar {
                       showDialog(
                           context: context,
                           builder: (context) => const MenuDialog());
+                    },
+                    icon: const Icon(Icons.more_vert),
+                    color: const Color(0xFFF2500B),
+                    iconSize: 30,
+                  );
+                },
+              ),
+            ],
+          )),
+    );
+  }
+
+  static showStaffAppBar(BuildContext context) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.transparent,
+      title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => const StaffMenuDialog());
                     },
                     icon: const Icon(Icons.more_vert),
                     color: const Color(0xFFF2500B),
