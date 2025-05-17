@@ -176,7 +176,6 @@ Future<Map<String, dynamic>> getZoneType(String? token, String? zone) async {
       body: jsonEncode(<String, dynamic>{
         'zone': zone,
       }));
-  print(response.body);
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
     return {
@@ -185,6 +184,7 @@ Future<Map<String, dynamic>> getZoneType(String? token, String? zone) async {
       'message': data['message'] ?? data['food_zone'] == true
           ? 'Food & Products zone'
           : 'Check in & Check out zone',
+      'data': data['zone']
     };
   } else if (response.statusCode == 401) {
     final data = jsonDecode(response.body);
