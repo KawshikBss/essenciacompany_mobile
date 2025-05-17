@@ -11,7 +11,8 @@ enum Option { checkIn, checkOut }
 
 class CheckinCheckoutView extends StatefulWidget {
   final String? zone;
-  const CheckinCheckoutView({super.key, this.zone});
+  final String? zoneName;
+  const CheckinCheckoutView({super.key, this.zone, this.zoneName});
 
   @override
   State<CheckinCheckoutView> createState() => _CheckinCheckoutViewState();
@@ -233,9 +234,12 @@ class _CheckinCheckoutViewState extends State<CheckinCheckoutView> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text('Door ${widget.zone}',
-                            style: GoogleFonts.roboto(
-                                fontSize: 40, fontWeight: FontWeight.w700)),
+                        Text(
+                          widget.zoneName ?? 'Door ${widget.zone}',
+                          style: GoogleFonts.roboto(
+                              fontSize: 40, fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   )

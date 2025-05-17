@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FoodProductsView extends StatefulWidget {
   final String? zone;
-  const FoodProductsView({super.key, this.zone});
+  final String? zoneName;
+  const FoodProductsView({super.key, this.zone, this.zoneName});
 
   @override
   State<FoodProductsView> createState() => _FoodProductsViewState();
@@ -342,9 +343,12 @@ class _FoodProductsViewState extends State<FoodProductsView> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text('Door ${widget.zone}',
-                            style: GoogleFonts.roboto(
-                                fontSize: 40, fontWeight: FontWeight.w700)),
+                        Text(
+                          widget.zoneName ?? 'Door ${widget.zone}',
+                          style: GoogleFonts.roboto(
+                              fontSize: 40, fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   )
